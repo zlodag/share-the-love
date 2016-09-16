@@ -23,8 +23,6 @@
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
-        <p>Nothing here {{'yet' + '!'}}</p>
-        <p>1 + 2 = {{1 + 2}}</p>
         <div ng-controller="TransactionController">
             <table id="transactions">
                 <thead>
@@ -44,38 +42,26 @@
                         <td ng-bind="transaction.comment"/>
                         <td>
                             <ul>
-                                <li ng-repeat="(uid, value) in transaction.from">{{ uid }} paid {{ value/100 | currency }}</li>
+                                <li ng-repeat="(uid, value) in transaction.from"><label ng-bind="uid"></label> paid {{ value/100 | currency }}</li>
                             </ul>
                         </td>
                         <td>
                             <ul>
-                                <li ng-repeat="(uid, value) in transaction.to">{{ value/100 }} part{{ value === 100 ? '' : 's'}} to {{ uid }}</li>
+                                <li ng-repeat="(uid, value) in transaction.to">{{ value/100 }} part{{ value === 100 ? '' : 's'}} to <label ng-bind="uid"></label></li>
                             </ul>
                         </td>
-<!--                         <td>
-                            <dl>
-                                <dt ng-repeat-start="(uid, value) in transaction.from" ng-bind="uid"/>
-                                <dd ng-repeat-end ng-bind="value/100 | currency"/>
-                            </dl>
-                        </td>
-                        <td>
-                            <dl>
-                                <dt ng-repeat-start="(uid, value) in transaction.to" ng-bind="uid"/>
-                                <dd ng-repeat-end ng-bind="value"/>
-                            </dl>
-                        </td> -->
                         <td ng-if="!transaction.reversed">
                             <button type="button" ng-click="reverseTransaction(transaction.$id)">Reverse</button>
                         </td>
                         <td ng-if="transaction.reversed">Reversed by {{ transaction.reversed.by }} at {{ transaction.reversed.at | date:'medium' }} ({{ transaction.reversed.comment }})</td>
                         <td class="deltas">
                             <ul>
-                                <li ng-repeat="user in users" ng-if="deltas[transactionIndex][user.uid]">{{ user.uid }} {{ deltas[transactionIndex][user.uid] / 100 | currency }}</li>
+                                <li ng-repeat="user in users" ng-if="deltas[transactionIndex][user.uid]"><label ng-bind="user.uid"></label> {{ deltas[transactionIndex][user.uid] / 100 | currency }}</li>
                             </ul>
                         </td>
                         <td>
                             <ul>
-                                <li ng-repeat="user in users">{{ user.uid }} {{ runningTotals[transactionIndex + 1][user.uid] / 100 | currency }}</li>
+                                <li ng-repeat="user in users"><label ng-bind="user.uid"></label> {{ runningTotals[transactionIndex + 1][user.uid] / 100 | currency }}</li>
                             </ul>
                         </td>
                     </tr>
