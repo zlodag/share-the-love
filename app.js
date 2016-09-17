@@ -1,36 +1,16 @@
-angular.module("shareTheLove", ["firebase"]).controller("TransactionController", ["$scope", "$firebaseArray", "$firebaseObject", function TransactionController($scope, $firebaseArray, $firebaseObject) {
-    $scope.runningTotals = [];
+angular.module("shareTheLove", ["firebase"]).controller("TransactionController", ["$scope", "ListWithDeltas", function TransactionController($scope, ListWithDeltas) {
+    $scope.runningTotals = {};
     $scope.transactions = [];
-    $scope.deltas = [];
     $scope.users = [];
-    var currentTotals = {};
-    function getDeltas(transaction) {
-        var deltas = {};
-        var totalMoney = 0;
-        angular.forEach(transaction.from, function(value, uid) {
-            deltas[uid] = value;
-            totalMoney += value;
-        });
-        var totalRatio = 0;
-        angular.forEach(transaction.to, function(value, uid) {
-            totalRatio += value;
-        });
-        var moneyPerUnit = totalMoney / totalRatio;
-        angular.forEach(transaction.to, function(value, uid) {
-            deltas[uid] = ((uid in deltas) ? deltas[uid] : 0) - value * moneyPerUnit;
-        });
-        return deltas;
-    }
-    function updateRecordsFrom(startIndex) {
-    }
     $scope.newTransaction = {
         from: {},
         to: {}
     };
     firebase.database().ref("users").once("value", function(snap) {
+        var initialRunningTotals = {};
         snap.forEach(function(childSnapshot) {
             var uid = childSnapshot.key;
-            currentTotals[uid] = 0;
+            initialRunningTotals[uid] = 0;
             var active = childSnapshot.val();
             $scope.users.push({
                 uid: uid,
@@ -39,35 +19,25 @@ angular.module("shareTheLove", ["firebase"]).controller("TransactionController",
             $scope.newTransaction.from[uid] = 0;
             $scope.newTransaction.to[uid] = 0;
         });
-        $scope.runningTotals.push(angular.copy(currentTotals));
-        $scope.transactions = $firebaseArray(firebase.database().ref("transactions"));
-        $scope.transactions.$watch(function(event) {
+//         $scope.runningTotals.push(angular.copy(currentTotals));
+        $scope.transactions = ListWithDeltas(firebase.database().ref("transactions"));
+        $scope.transactions.$watch(function(event){
+            console.log(event);
             switch(event.event){
                 case "child_added":
-                    var transaction = $scope.transactions.$getRecord(event.key);
-                    var deltas = getDeltas(transaction);
-                    $scope.deltas.push(deltas);
-                    if (!transaction.reversed) {
-                        angular.forEach(deltas, function(value, uid) {
-                            currentTotals[uid] += value;
-                        });
-                    }
-                    $scope.runningTotals.push(angular.copy(currentTotals));
-                    break;
                 case "child_changed":
-                    var startIndex = $scope.transactions.$indexFor(event.key);
-                    currentTotals = angular.copy($scope.runningTotals[startIndex]);
-                    for (i = startIndex; i < $scope.transactions.length; i++){
-                        var transaction = $scope.transactions[i];
-                        var deltas = getDeltas(transaction);
-                        $scope.deltas[i] = deltas;
-                        if (!transaction.reversed) {
-                            angular.forEach(deltas, function(value, uid) {
-                                currentTotals[uid] += value;
+                    var index = $scope.transactions.$indexFor(event.key);
+                    var newTotals = index === 0 ? initialRunningTotals : $scope.runningTotals[$scope.transactions[index-1].$id];
+                    do {
+                        var record = $scope.transactions[index];
+                        newTotals = angular.copy(newTotals);
+                        if (!record.reversed){
+                            angular.forEach(record.deltas, function(value, uid){
+                                newTotals[uid] += value;
                             });
                         }
-                        $scope.runningTotals[i + 1] = angular.copy(currentTotals);
-                    }
+                        $scope.runningTotals[record.$id] = newTotals;
+                    } while (++index < $scope.transactions.length);
                     break;
             }
         });
@@ -124,6 +94,66 @@ angular.module("shareTheLove", ["firebase"]).controller("TransactionController",
         return total;
     }
     ;
+}
+])
+// .factory("Users", ["$firebaseArray", function($firebaseArray) {
+//     return $firebaseArray
+// }])
+.factory("ListWithDeltas", ["$firebaseArray", function($firebaseArray) {
+    return $firebaseArray.$extend({
+        getNewTotals: function(deltas, lastTotals){
+            var runningTotals = angular.copy(lastTotals);
+            angular.forEach(deltas, function(value, uid) {
+                runningTotals[uid] += value;
+            });
+            return runningTotals;
+        },
+        getDeltas: function(dataSnapshot) {
+            var deltas = {};
+            var totalMoney = 0;
+            dataSnapshot.child("from").forEach(function(childSnapshot) {
+                var value = childSnapshot.val();
+                deltas[childSnapshot.key] = value;
+                totalMoney += value;
+            });
+            var totalRatio = 0;
+            dataSnapshot.child("to").forEach(function(childSnapshot) {
+                totalRatio += childSnapshot.val();
+                if (!(childSnapshot.key in deltas)) {
+                    deltas[childSnapshot.key] = 0;
+                }
+            });
+            var moneyPerUnit = totalMoney / totalRatio;
+            dataSnapshot.child("to").forEach(function(childSnapshot) {
+                deltas[childSnapshot.key] -= childSnapshot.val() * moneyPerUnit;
+            });
+            return deltas;
+        },
+        $$added: function(snapshot, prevChild) {
+            var added = $firebaseArray.prototype.$$added.apply(this, arguments);
+            added.deltas = this.getDeltas(snapshot);
+//             var currentTotals;
+//             if (prevChild === null){
+//                 added.runningTotals = {a:0,b:0,c:0,d:0,e:0,f:0};
+//             } else {
+//                 added.runningTotals = this.getNewTotals(added.deltas, this.$getRecord(prevChild).runningTotals);
+//             }
+//             added.runningTotals = this.getNewTotals(added.deltas, currentTotals);
+//             var currentTotals = added.runningTotals;
+//             var index = this.$indexFor
+//             while (++index < this.$list.length){
+//                 var record = this.$list[index];
+//                 currentTotals = this.getNewTotals(record.deltas, currentTotals);
+//                 record.runningTotals = currentTotals;
+//             }
+            return added;
+        },
+        $$updated: function(snapshot) {
+            $firebaseArray.prototype.$$updated.apply(this, arguments);
+            this.$getRecord(snapshot.key).deltas = this.getDeltas(snapshot);
+            return true;
+        }
+    });
 }
 ]);
 // .factory("ListWithTotal", ["$firebaseArray",
