@@ -3,14 +3,10 @@
     <head>
         <meta charset="utf-8">
         <title>Share the Love</title>
-        <!--     
-            <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
-            <script type="text/javascript" src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
-        -->
-        <script type="text/javascript" src="angular.js"></script>
-        <script type="text/javascript" src="firebase.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase-app.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase-database.js"></script>
         <script>
-            // Initialize Firebase
             var config = {
                 apiKey: "AIzaSyCwV6upXvsdSwkSZd4FuwJGfeQUG-O-8lE",
                 authDomain: "share-the-love.firebaseapp.com",
@@ -19,14 +15,13 @@
             };
             firebase.initializeApp(config);
         </script>
-        <script type="text/javascript" src="angularfire.js"></script>
-        <script type="text/javascript" src="app.js"></script>
+        <script src="https://cdn.firebase.com/libs/angularfire/2.0.2/angularfire.min.js"></script>
+        <script src="app.js"></script>
         <link rel="stylesheet" href="styles.css">
     </head>
     <body ng-controller="TransactionController">
         <form name="transactionForm" ng-submit="submitTransaction()">
             <div>
-<!--                 <label for="userSelect">Select a user:</label> -->
                 <select id="userSelect" ng-options="user.$id disable when !user.$value for user in users track by user.$id" ng-model="currentUser" required>
                     <option value="">Select a user:</option>
                 </select>
