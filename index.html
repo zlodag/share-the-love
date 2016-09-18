@@ -3,8 +3,10 @@
     <head>
         <meta charset="utf-8">
         <title>Share the Love</title>
-        <!--     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
-	<script type="text/javascript" src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script> -->
+        <!--     
+            <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.js"></script>
+            <script type="text/javascript" src="https://cdn.firebase.com/js/client/2.4.2/firebase.js"></script>
+        -->
         <script type="text/javascript" src="angular.js"></script>
         <script type="text/javascript" src="firebase.js"></script>
         <script>
@@ -19,29 +21,70 @@
         </script>
         <script type="text/javascript" src="angularfire.js"></script>
         <script type="text/javascript" src="app.js"></script>
-        <!-- 	<script type="text/javascript" src="transactions.js"></script> -->
         <link rel="stylesheet" href="styles.css">
     </head>
-    <body>
-        <div ng-controller="TransactionController">
-<!--         <pre ng-bind="transactions | json"></pre> -->
-<!--         <pre ng-bind="runningTotals | json"></pre> -->
+    <body ng-controller="TransactionController">
+        <form name="transactionForm" ng-submit="submitTransaction()">
+            <div>
+<!--                 <label for="userSelect">Select a user:</label> -->
+                <select id="userSelect" ng-options="user.$id disable when !user.$value for user in users track by user.$id" ng-model="currentUser" required>
+                    <option value="">Select a user:</option>
+                </select>
+            </div>
             <table id="transactions">
                 <thead>
                     <tr>
-                        <th>Date</th>
                         <th>Comment</th>
                         <th>From</th>
                         <th>To</th>
-                        <th>Reverse</th>
                         <th>Deltas</th>
                         <th>Totals</th>
+                        <th>Reverse</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="transaction in transactions" ng-init="transactionIndex = $index" ng-class="{strikethrough : transaction.reversed}">
-                        <td ng-bind="transaction.$priority | date:'medium'"/>
-                        <td ng-bind="transaction.comment"/>
+                    <tr ng-class="{good:transactionForm.$valid && newInfo}">
+                        <td>
+                            <input type="text" id="comment" pattern=".{3,127}" placeholder="Insert comment" required title="3 to 127 characters"  ng-model="newTransaction.comment"/>
+                        </td>
+                        <td>                    
+                            <ul>
+                                <li ng-repeat="user in users | filter : {$value:true} : true">
+                                    <label for="from_{{ user.$id }}" ng-bind="user.$id"></label>
+                                    paid $
+                                    <input id="from_{{ user.$id }}" type="number" min="0" step="0.01" ng-model="newTransaction.from[user.$id]" required />
+                                </li>
+                                <li ng-if="newInfo">Total: {{ newInfo.sumFrom / 100 | currency }}</li>
+                            </ul>
+                        </td>
+                        <td>                    
+                            <ul>
+                                <li ng-repeat="user in users | filter : {$value:true} : true">
+                                    <input id="to_{{ user.$id }}" type="number" min="0" step="0.01" ng-model="newTransaction.to[user.$id]" required />
+                                    parts to
+                                    <label for="to_{{ user.$id }}" ng-bind="user.$id"></label>
+                                </li>
+                                <li ng-if="newInfo">Total parts: {{ newInfo.sumRatio / 100 }}</li>
+                                <li ng-if="newInfo">Cost per part: {{ newInfo.moneyPerUnit | currency }}</li>
+                            </ul>
+                        </td>
+                        <td class="deltas">
+                            <ul ng-if="newInfo">
+                                <li ng-repeat="user in users" ng-if="newInfo.deltas[user.$id]"><label ng-bind="user.$id"></label> {{ newInfo.deltas[user.$id] / 100 | currency }}</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul ng-if="newInfo">
+                                <li ng-repeat="user in users"><label ng-bind="user.$id"></label> {{ newInfo.totals[user.$id] / 100 | currency }}</li>
+                            </ul>
+                        </td>
+                        <td>
+                            <input type="submit" ng-disabled="transactionForm.$invalid || !newInfo"/>
+                            <button type="button" ng-click="clear()">Clear</button>
+                        </td>
+                    </tr>
+                    <tr ng-repeat="transaction in transactions | orderBy: '-'" ng-class="{strikethrough : transaction.reversed}">
+                        <td>{{ transaction.$priority | date:'medium' }}<br/>{{ transaction.comment }}</td>
                         <td>
                             <ul>
                                 <li ng-repeat="(uid, value) in transaction.from"><label ng-bind="uid"></label> paid {{ value/100 | currency }}</li>
@@ -52,44 +95,23 @@
                                 <li ng-repeat="(uid, value) in transaction.to">{{ value/100 }} part{{ value === 100 ? '' : 's'}} to <label ng-bind="uid"></label></li>
                             </ul>
                         </td>
-                        <td ng-if="!transaction.reversed">
-                            <button type="button" ng-click="reverseTransaction(transaction.$id)">Reverse</button>
-                        </td>
-                        <td ng-if="transaction.reversed">Reversed by {{ transaction.reversed.by }} at {{ transaction.reversed.at | date:'medium' }} ({{ transaction.reversed.comment }})</td>
                         <td class="deltas">
                             <ul>
-                                <li ng-repeat="user in users" ng-if="transaction.deltas[user.uid]"><label ng-bind="user.uid"></label> {{ transaction.deltas[user.uid] / 100 | currency }}</li>
+                                <li ng-repeat="user in users" ng-if="transaction.deltas[user.$id]"><label ng-bind="user.$id"></label> {{ transaction.deltas[user.$id] / 100 | currency }}</li>
                             </ul>
                         </td>
                         <td>
                             <ul>
-                                <li ng-repeat="user in users"><label ng-bind="user.uid"></label> {{ runningTotals[transaction.$id][user.uid] / 100 | currency }}</li>
+                                <li ng-repeat="user in users"><label ng-bind="user.$id"></label> {{ runningTotals[transaction.$id][user.$id] / 100 | currency }}</li>
                             </ul>
                         </td>
-<!--                         <td>
-                        {{transactions.delta(transaction.$id) | json}}
-                        </td> -->
+                        <td ng-if="!transaction.reversed">
+                            <button ng-disabled="!currentUser" type="button" ng-click="transactions.reverse(transaction.$id, currentUser.$id)">Reverse</button>
+                        </td>
+                        <td ng-if="transaction.reversed">Reversed by {{ transaction.reversed.by }} at {{ transaction.reversed.at | date:'medium' }} ({{ transaction.reversed.comment }})</td>
                     </tr>
                 </tbody>
             </table>
-            <p>Total transactions: {{ transactions.getTotal() }}</p>
-            <form ng-submit="submitTransaction()">
-                <fieldset ng-repeat="fieldset in fieldsets">
-                    <legend ng-bind="fieldset.label"></legend>
-                    <ul>
-                        <li ng-repeat="user in users | filter:{active: true}">
-                            <label for="{{ fieldset.type + '_' + user.uid }}" ng-bind="user.uid"></label>
-                            <input id="{{ fieldset.type + '_' + user.uid }}" type="number" min="0" step="0.01" ng-model="newTransaction[fieldset.type][user.uid]" required />
-                        </li>
-                    </ul>
-                    <p ng-if="fieldset.type === 'from'">Total: {{ sumFrom() | currency }}</p>
-                </fieldset>
-                <fieldset>
-                    <label for="comment">Comment</label>
-                    <input type="text" id="comment" pattern=".{3,127}" required title="3 to 127 characters"  ng-model="newTransaction.comment"/>
-                </fieldset>
-                <input type="submit"/>
-            </form>
-        </div>
+        </form>
     </body>
 </html>
