@@ -12,22 +12,22 @@
           ".write" : "!data.exists() && newData.exists() && newData.getPriority() === now && !newData.hasChild('reversed')",
           ".validate" : "newData.hasChildren(['comment','by','from','to'])",
           "comment" : {
-            ".validate" : "newData.isString() && newData.val().length >= 3 && newData.val().length < 128",
+            ".validate" : "newData.isString() && newData.val().length >= 3 && newData.val().length < 128"
           },
           "by" : {
-            ".validate" : "newData.isString() && root.child('users').child(newData.val()).val() === true",
+            ".validate" : "newData.isString() && root.child('users').child(newData.val()).val() === true"
           },
           "reversed" : {
             ".write" : "!data.exists() && newData.exists()",
             ".validate" : "newData.hasChildren(['comment','by','at'])",
             "comment" : {
-              ".validate" : "newData.isString() && newData.val().length >= 3 && newData.val().length < 128",
+              ".validate" : "newData.isString() && newData.val().length >= 3 && newData.val().length < 128"
             },
             "by" : {
-                ".validate" : "newData.isString() && root.child('users').child(newData.val()).val() === true",
+            	".validate" : "newData.isString() && root.child('users').child(newData.val()).val() === true"
             },
             "at" : {
-                ".validate" : "newData.val() === now"
+            	".validate" : "newData.val() === now"
             },
             "$other" : {
               ".validate" : false
@@ -46,4 +46,3 @@
       }
   }
 }
-
