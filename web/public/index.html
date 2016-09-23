@@ -17,9 +17,8 @@
             firebase.initializeApp(config);
         </script>
         <script src="https://cdn.firebase.com/libs/angularfire/2.0.2/angularfire.min.js"></script>
-        <script src="/app.js"></script>
+        <script src="app.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<!--         <link rel="stylesheet" href="styles.css"> -->
     </head>
     <body ng-controller="TransactionController" class="container">
         <form class="form-horizontal" name="transactionForm" ng-submit="submitTransaction()">
@@ -30,14 +29,14 @@
                 </select>
             </div>
             <div class="form-group" ng-repeat="user in users | filter : {$value:true} : true">
-                <label class="col-sm-2 control-label" for="from_{{ user.$id }}">From {{ user.$id }}</label>
+                <label class="col-sm-2 control-label" for="from_{{ user.$id }}">{{ user.$id }} paid</label>
                 <div class="col-sm-2">
                     <div class="input-group">
                         <span class="input-group-addon">$</span>
                         <input class="form-control" id="from_{{ user.$id }}" type="number" min="0" step="0.01" ng-model="newTransaction.from[user.$id]" required />
                     </div>
                 </div>
-                <label class="col-sm-2 control-label" for="to_{{ user.$id }}">To {{ user.$id }}</label>
+                <label class="col-sm-2 control-label" for="to_{{ user.$id }}">{{ user.$id }} received</label>
                 <div class="col-sm-2">
                     <div class="input-group">
                         <input class="form-control" id="to_{{ user.$id }}" type="number" min="0" step="0.01" ng-model="newTransaction.to[user.$id]" required />
@@ -70,7 +69,7 @@
                     <th>Comment</th>
                     <th>Deltas</th>
                     <th>Totals</th>
-                    <th>Reverse</th>
+                    <th>Delete</th>
                 </tr>
             </thead>
             <tbody>
@@ -109,11 +108,11 @@
                         </dl>
                     </td>
                     <td ng-if="!transaction.reversed">
-                        <button class="btn btn-default" ng-disabled="!currentUser" type="button" ng-click="transactions.reverse(transaction.$id, currentUser.$id)">Reverse</button>
+                        <button class="btn btn-default" ng-disabled="!currentUser" type="button" ng-click="transactions.reverse(transaction.$id, currentUser.$id)">Delete</button>
                     </td>
                     <td ng-if="transaction.reversed">
                         <ul class="list-unstyled">
-                            <li>Reversed by <b ng-bind="transaction.reversed.by"></b></li>
+                            <li>Deleted by <b ng-bind="transaction.reversed.by"></b></li>
                             <li ng-bind="transaction.reversed.at | date:'medium'"/>
                             <li><em ng-bind="transaction.reversed.comment"></em></li>
                         </ul>
