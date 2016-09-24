@@ -20,24 +20,22 @@
         $scope.deleteProperty = function(property, object){
             delete object[property];
         };
-        $scope.changedList = function(list,newData,key){
+        $scope.changedList = function(list,newData,key,primitive){
             var ratios = {};
             angular.forEach(list, function(name){
                 if (Users.$indexFor(name) !== -1){
-                    ratios[name] = 1;
+                    ratios[name] = primitive;
                 }
             });
             return ratios;
         };
-        $scope.changed = function(name,newData,key){
+        $scope.changed = function(name,newData,key,primitive){
             if (Users.$indexFor(name) !== -1){
                 if (!(key in newData)){
                     newData[key] = {};
                 }
-                if (!(name in newData[key])){
-                    newData[key][name] = 1;
-                    return true;
-                }
+                newData[key][name] = primitive;
+                return true;
             }
             return false;
         };

@@ -31,7 +31,7 @@
     <body ng-controller="TransactionController" class="container">
         <form class="form">
             <ul class="list-unstyled">
-                <li ng-repeat="user in users track by user.$id" ng-if="newData.from[user.$id]" class="form-group">
+                <li ng-repeat="user in users track by user.$id" ng-if="newData.from[user.$id]>=0" class="form-group">
                     <label class="col-xs-4 control-label">{{ user.$id }} paid</label>
                     <div class="col-xs-4" ng-if="newData.from">
                         <div class="input-group">
@@ -44,7 +44,7 @@
                     </div>
                 </li>
                 <li class="form-group">
-                    <select class="form-control" ng-options="user.$id as user.$id disable when newData.from[user.$id] for user in users" ng-model="sad" ng-change="changed(sad, newData,'from')" required>
+                    <select class="form-control" ng-options="user.$id as user.$id disable when newData.from[user.$id] for user in users" ng-model="sad" ng-change="changed(sad, newData,'from',10)" required>
                         <option value="">Add a paying user</option>
                     </select>
                 </li>
@@ -67,7 +67,7 @@
                 </div>
                 <div ng-switch-when="even">
                     <label for="evenType" class="sr-only">Select users</label>
-                    <select id="evenType" class="form-control" ng-change="newData.ratios = changedList(newData.even, newData, 'toEven')" ng-options="user.$id as user.$id for user in users" ng-model="newData.even" required multiple></select>
+                    <select id="evenType" class="form-control" ng-change="newData.ratios = changedList(newData.even, newData, 'toEven', 1)" ng-options="user.$id as user.$id for user in users" ng-model="newData.even" required multiple></select>
                 </div>
                 <ul ng-switch-when="uneven" class="list-unstyled">
                     <li ng-repeat="user in users track by user.$id" ng-if="newData.toUneven[user.$id]" class="form-group">
@@ -84,7 +84,7 @@
                     </li>
                     <li class="form-group">
                         <!--                         <label class="col-xs-6 control-label">Add a user</label> -->
-                        <select class="form-control" ng-options="user.$id as user.$id disable when newData.toUneven[user.$id] for user in users" ng-model="happy" ng-change="changed(happy, newData,'toUneven')" required>
+                        <select class="form-control" ng-options="user.$id as user.$id disable when newData.toUneven[user.$id] for user in users" ng-model="happy" ng-change="changed(happy, newData,'toUneven',1)" required>
                             <option value="">Add a user</option>
                         </select>
                     </li>
