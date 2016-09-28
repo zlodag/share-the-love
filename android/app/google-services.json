@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "577181097914",
+    "firebase_url": "https://share-the-love.firebaseio.com",
+    "project_id": "share-the-love",
+    "storage_bucket": "share-the-love.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:577181097914:android:965ec1ebd5e68ecd",
+        "android_client_info": {
+          "package_name": "com.skepticalone.sharethelove"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "577181097914-ac1bmuptdq6ukgbgutni7lf4qnrqgt2f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBLdLJtJr4SU2daa68YbPqdz8Ho9iQEdFA"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

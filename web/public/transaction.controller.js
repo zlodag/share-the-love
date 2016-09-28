@@ -2,10 +2,11 @@
 (function() {
 	angular
 		.module("shareTheLove")
-		.controller("TransactionController", ["$scope", "Users", "ListWithDeltas", TransactionController]);
+		.controller("TransactionController", ["$scope", "Users", "ListWithDeltas", "$firebaseAuth", TransactionController]);
 
-    function TransactionController($scope, Users, ListWithDeltas) {
+    function TransactionController($scope, Users, ListWithDeltas, $firebaseAuth) {
         $scope.newData = {};
+//         $scope.auth = $firebaseAuth();
         $scope.clear = function(){
             $scope.newTransaction = {
                 comment: "",
@@ -105,7 +106,8 @@
             $scope.$watch("newTransaction",function(newValue, oldValue){
                 $scope.newInfo = getNewInfo(newValue);
             },true);
-            $scope.submitTransaction = function() {
+            $scope.submitTransaction = function(newData) {
+//                 newData.by = 
                 var newInfo = getNewInfo($scope.newTransaction);
                 if (!newInfo) return false;
                 var newTransaction = {

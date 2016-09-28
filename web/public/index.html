@@ -29,10 +29,10 @@
 <!--         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
     </head>
     <body ng-controller="TransactionController" class="container">
-        <form class="form">
+        <form class="form" ng-submit="submitTransaction(newData)">
             <ul class="list-unstyled">
                 <li ng-repeat="user in users track by user.$id" ng-if="newData.from[user.$id]>=0" class="form-group">
-                    <label class="col-xs-4 control-label">{{ user.$id }} paid</label>
+                    <label class="col-xs-4 control-label">{{ user.name }} paid</label>
                     <div class="col-xs-4" ng-if="newData.from">
                         <div class="input-group">
                             <span class="input-group-addon">$</span>
@@ -44,7 +44,7 @@
                     </div>
                 </li>
                 <li class="form-group">
-                    <select class="form-control" ng-options="user.$id as user.$id disable when newData.from[user.$id] for user in users" ng-model="sad" ng-change="changed(sad, newData,'from',0)" required>
+                    <select class="form-control" ng-options="user.$id as user.name disable when newData.from[user.$id] for user in users" ng-model="sad" ng-change="changed(sad, newData,'from',0)" required>
                         <option value="">Add a paying user</option>
                     </select>
                 </li>
@@ -61,31 +61,34 @@
             <div ng-if="type" ng-switch="type" class="form-group">
                 <div ng-switch-when="single">
                     <label for="singleType" class="sr-only">Select a user</label>
-                    <select id="singleType" class="form-control" ng-options="user.$id as user.$id for user in users track by user.$id" ng-model="single" ng-change="newData.ratios = {}; newData.ratios[single] = 1" required>
+                    <select id="singleType" class="form-control" ng-options="user.$id as user.name for user in users track by user.$id" ng-model="single" ng-change="newData.to = {}; newData.to[single] = 1" required>
                     <!--                         <option value="">No user selected</option> -->
                     </select>
                 </div>
                 <div ng-switch-when="even">
-                      <label ng-repeat="user in users track by user.$id"><input type="checkbox" ng-model="newData.ratios[user.$id]" ng-true-value="1" ng-false-value="undefined"/>{{ user.$id }}</label>
+                      <label ng-repeat="user in users track by user.$id">
+                              <input type="checkbox" ng-model="newData.to[user.$id]" ng-true-value="1" ng-false-value="undefined">
+                              {{ user.name }}
+                      </label>
 <!--                     <label for="evenType" class="sr-only">Select users</label>
-                    <select id="evenType" class="form-control" ng-change="newData.ratios = changedList(even, newData, 'toEven', 1)" ng-options="user.$id as user.$id for user in users" ng-model="even" required multiple></select> -->
+                    <select id="evenType" class="form-control" ng-change="newData.to = changedList(even, newData, 'toEven', 1)" ng-options="user.$id as user.$id for user in users" ng-model="even" required multiple></select> -->
                 </div>
                 <ul ng-switch-when="uneven" class="list-unstyled">
-                    <li ng-repeat="user in users track by user.$id" ng-if="newData.ratios[user.$id]" class="form-group">
-                        <label class="col-xs-4 control-label" ng-bind="user.$id"></label>
-                        <div class="col-xs-4" ng-if="newData.ratios">
+                    <li ng-repeat="user in users track by user.$id" ng-if="newData.to[user.$id]" class="form-group">
+                        <label class="col-xs-4 control-label" ng-bind="user.name"></label>
+                        <div class="col-xs-4" ng-if="newData.to">
                             <div class="input-group">
-                                <input class="form-control" type="number" min="0" step="0.01" ng-model="newData.ratios[user.$id]" required/>
+                                <input class="form-control" type="number" min="0" step="0.01" ng-model="newData.to[user.$id]" required/>
                                 <span class="input-group-addon">parts</span>
                             </div>
                         </div>
                         <div class="col-xs-4">
-                            <button type="button" class="btn btn-default" ng-click="deleteProperty(user.$id, newData.ratios)">Remove</button>
+                            <button type="button" class="btn btn-default" ng-click="deleteProperty(user.$id, newData.to)">Remove</button>
                         </div>
                     </li>
                     <li class="form-group">
                         <!--                         <label class="col-xs-6 control-label">Add a user</label> -->
-                        <select class="form-control" ng-options="user.$id as user.$id disable when newData.ratios[user.$id] for user in users" ng-model="happy" ng-change="changed(happy, newData,'ratios',1)" required>
+                        <select class="form-control" ng-options="user.$id as user.name disable when newData.to[user.$id] for user in users" ng-model="happy" ng-change="changed(happy, newData,'to',1)" required>
                             <option value="">Add a user</option>
                         </select>
                     </li>
@@ -100,6 +103,15 @@
                         <input class="form-control" type="checkbox" ng-options="user.$id as user.$id for user in users" ng-model="newData.to" required multiple>
                     </li> -->
                 </ul>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label" for="comment">Enter a comment</label>
+                <div class="col-sm-6">
+                    <input class="form-control" type="text" id="comment" pattern=".{3,127}" required title="3 to 127 characters" placeholder="Comment" ng-model="newTransaction.comment"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary"/>
             </div>
         </form>
         <pre ng-bind="newData | json"></pre>
@@ -163,14 +175,14 @@
                                 <em ng-bind="transaction.comment"></em>
                             </li>
                             <li ng-repeat="(uid, value) in transaction.from">
-                                <b>{{ uid }}</b>
+                                <b>{{ users.$getRecord(uid).name }}</b>
                                 <span>paid {{ value/100 | currency }}
                                 </span>
                                 <span ng-if="transaction.to[uid]" ng-init="ratio = transaction.to[uid]">and received {{ ratio/100 }} part{{ ratio === 100 ? '' : 's'}}
                                 </span>
                             </li>
                             <li ng-repeat="(uid, value) in transaction.to" ng-if="!transaction.from[uid]">
-                                <b>{{ uid }}</b>
+                                <b>{{ users.$getRecord(uid).name }}</b>
                                 <span>received {{ value/100 }} part{{ value === 100 ? '' : 's'}}
                                 </span>
                             </li>
@@ -178,13 +190,13 @@
                     </td>
                     <td>
                         <dl class="dl-horizontal">
-                            <dt ng-repeat-start="user in users" ng-if="transaction.deltas[user.$id]" ng-bind="user.$id"/>
+                            <dt ng-repeat-start="user in users" ng-if="transaction.deltas[user.$id]" ng-bind="user.name"/>
                             <dd ng-repeat-end ng-if="transaction.deltas[user.$id]" ng-bind="transaction.deltas[user.$id] / 100 | currency"/>
                         </dl>
                     </td>
                     <td>
                         <dl class="dl-horizontal">
-                            <dt ng-repeat-start="user in users" ng-bind="user.$id"/>
+                            <dt ng-repeat-start="user in users" ng-bind="user.name"/>
                             <dd ng-repeat-end ng-bind="runningTotals[transaction.$id][user.$id] / 100 | currency"/>
                         </dl>
                     </td>

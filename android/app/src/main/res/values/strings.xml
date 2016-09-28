@@ -1,3 +1,20 @@
 <resources>
     <string name="app_name">ShareTheLove</string>
+    <string name="title_activity_login">Sign in</string>
+
+    <!-- Strings related to login -->
+    <string name="prompt_email">Email</string>
+    <string name="prompt_password">Password (optional)</string>
+    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">This password is too short</string>
+    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="permission_rationale">"Contacts permissions are needed for providing email
+        completions."
+    </string>
+    <!--<string name="default_web_client_id">577181097914-ac1bmuptdq6ukgbgutni7lf4qnrqgt2f.apps.googleusercontent.com</string>-->
+    <string name="signed_in_format">Signed in as "%s"!</string>
+    <string name="sign_out_firebase">Sign out of firebase</string>
 </resources>
