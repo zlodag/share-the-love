@@ -2,11 +2,34 @@
 (function() {
 	angular
 		.module("shareTheLove")
-		.controller("TransactionController", ["$scope", "Users", "ListWithDeltas", "$firebaseAuth", TransactionController]);
+		.controller("TransactionController", ["$scope", "Users", "NewTransaction", "ListWithDeltas", "Auth", TransactionController]);
 
-    function TransactionController($scope, Users, ListWithDeltas, $firebaseAuth) {
+    function TransactionController($scope, Users, NewTransaction, ListWithDeltas, Auth) {
+        $scope.newt = NewTransaction;
+        $scope.submit = NewTransaction.submit;
         $scope.newData = {};
-//         $scope.auth = $firebaseAuth();
+        $scope.signIn = function(){
+            Auth.$signInWithPopup('google');
+        };
+        $scope.signOut = function(){
+            Auth.$signOut();
+        };
+        Auth.$onAuthStateChanged(function(firebaseUser) {
+            $scope.me = firebaseUser;
+            if (firebaseUser) {
+                console.log("Signed in as:", firebaseUser.uid);
+            } else {
+                console.log("Signed out");
+            }
+        });
+
+        // $scope.signIn = function(){
+        //     Auth.$signInWithPopup("google").then(function(result) {
+        //         console.log("Signed in as:", result.user.uid);
+        //     }).catch(function(error) {
+        //         console.error("Authentication failed:", error);
+        //     });
+        // };
         $scope.clear = function(){
             $scope.newTransaction = {
                 comment: "",
@@ -103,24 +126,26 @@
             angular.forEach(users, function(user){
                 initialRunningTotals[user.$id] = 0;
             });
-            $scope.$watch("newTransaction",function(newValue, oldValue){
-                $scope.newInfo = getNewInfo(newValue);
-            },true);
-            $scope.submitTransaction = function(newData) {
-//                 newData.by = 
-                var newInfo = getNewInfo($scope.newTransaction);
-                if (!newInfo) return false;
-                var newTransaction = {
-                    from: newInfo.from,
-                    to: newInfo.to,
-                    by: $scope.currentUser.$id,
-                    comment: $scope.newTransaction.comment,
-                    $priority: firebase.database.ServerValue.TIMESTAMP
-                };
-                $scope.transactions.$add(newTransaction);
-                $scope.clear();
-            };
-            $scope.transactions = ListWithDeltas(firebase.database().ref("transactions"));
+//             console.log(initialRunningTotals);
+            // $scope.$watch("newTransaction",function(newValue, oldValue){
+            //     $scope.newInfo = getNewInfo(newValue);
+            // },true);
+//             $scope.submitTransaction = function(newData) {
+// //                 newData.by =
+//                 var newInfo = getNewInfo($scope.newTransaction);
+//                 if (!newInfo) return false;
+//                 var newTransaction = {
+//                     from: newInfo.from,
+//                     to: newInfo.to,
+//                     by: $scope.currentUser.$id,
+//                     comment: $scope.newTransaction.comment,
+//                     $priority: firebase.database.ServerValue.TIMESTAMP
+//                 };
+//                 $scope.transactions.$add(newTransaction);
+//                 $scope.clear();
+//             };
+            $scope.transactions = ListWithDeltas;
+            // $scope.transactions = ListWithDeltas(firebase.database().ref("transactions"));
             $scope.runningTotals = {};
             $scope.transactions.$watch(function(event){
                 switch(event.event){
@@ -128,6 +153,7 @@
                     case "child_changed":
                         var index = $scope.transactions.$indexFor(event.key);
                         var newTotals = index === 0 ? initialRunningTotals : $scope.runningTotals[$scope.transactions[index-1].$id];
+                        console.log(newTotals);
                         do {
                             var record = $scope.transactions[index];
                             newTotals = angular.copy(newTotals);

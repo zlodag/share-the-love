@@ -5,6 +5,9 @@
 		.factory("ListWithDeltas", ["$firebaseArray", ListWithDeltas]);
 
 	function ListWithDeltas($firebaseArray) {
+
+		var totals = {};
+
 	    return $firebaseArray.$extend({
 	        getNewTotals: function(deltas, lastTotals){
 	            var runningTotals = angular.copy(lastTotals);
@@ -12,6 +15,9 @@
 	                runningTotals[uid] += value;
 	            });
 	            return runningTotals;
+	        },
+	        getTotals: function(id, uid){
+	        	return totals[id][uid];
 	        },
 	        getDeltas: function(dataSnapshot) {
 	            var deltas = {};
@@ -51,6 +57,11 @@
 	        $$added: function(snapshot, prevChild) {
 	            var added = $firebaseArray.prototype.$$added.apply(this, arguments);
 	            added.deltas = this.getDeltas(snapshot);
+	            var previousTotals = prevChild === null ? null : totals[prevChild];
+	            totals[added.$id] = {};
+	            angular.forEach(added.deltas, function(delta, uid){
+	            	totals[added.$id][uid] = (prevChild === null ? 0 : totals[prevChild][uid]) + delta;
+	            });
 	            return added;
 	        },
 	        $$updated: function(snapshot) {
@@ -58,7 +69,7 @@
 	            this.$getRecord(snapshot.key).deltas = this.getDeltas(snapshot);
 	            return true;
 	        }
-	    });
+	    })(firebase.database().ref("transactions"));
 	}
 
 })();
