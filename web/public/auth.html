@@ -1,0 +1,7 @@
+<div ng-if="me">
+    <span title="{{ me.uid }}">Welcome, {{ me.displayName }}!</span>
+    <button type="button" class="btn btn-primary" ng-click="signOut()">Sign out</button>
+</div>
+<div ng-if="!me">
+	<button type="button" class="btn btn-primary" ng-click="signIn()">Sign in</button>
+</div>

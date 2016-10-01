@@ -2,25 +2,55 @@
 (function() {
 	angular
 		.module("shareTheLove")
-		.factory("ListWithDeltas", ["$firebaseArray", ListWithDeltas]);
+		.factory("ListWithDeltas", ["$firebaseArray", "Users", ListWithDeltas]);
 
-	function ListWithDeltas($firebaseArray) {
+	function ListWithDeltas($firebaseArray, Users) {
 
 		var totals = {};
 
-	    return $firebaseArray.$extend({
-	        getNewTotals: function(deltas, lastTotals){
-	            var runningTotals = angular.copy(lastTotals);
-	            angular.forEach(deltas, function(value, uid) {
-	                runningTotals[uid] += value;
-	            });
-	            return runningTotals;
+		var customArray = $firebaseArray.$extend({
+	        $$added: function(snapshot, prevChild) {
+	            var added = $firebaseArray.prototype.$$added.apply(this, arguments);
+	            added.deltas = getDeltas(snapshot);
+            	updateTotals(added, prevChild);
+	            return added;
 	        },
-	        getTotals: function(id, uid){
-	        	return totals[id][uid];
+	        $$updated: function(snapshot) {
+	            $firebaseArray.prototype.$$updated.apply(this, arguments);
+	            this.$getRecord(snapshot.key).deltas = getDeltas(snapshot);
+            	var index = this.$indexFor(snapshot.key);
+            	var previousKey = index === 0 ? null : this.$keyAt(index - 1);
+            	while (index < this.length){
+            		var record = this.$getRecord(index);
+            		updateTotals(record, previousKey);
+					previousKey = record.$id;
+					index++;
+            	}
+	            return true;
 	        },
-	        getDeltas: function(dataSnapshot) {
-	            var deltas = {};
+	        getTotal: function(transactionId, userId){
+	        	return totals[transactionId][userId];
+	        }
+	    });
+
+		return Users.$loaded(function(){
+	    	return customArray(firebase.database().ref("transactions"));
+		});
+
+		function updateTotals(record, previousKey){
+            totals[record.$id] = {};
+			angular.forEach(Users, function(user){
+				var total = previousKey === null ? 0 : totals[previousKey][user.$id];
+				if (user.$id in record.deltas){
+					total += record.deltas[user.$id];
+				}
+				totals[record.$id][user.$id] = total;
+			});
+		}
+
+		function getDeltas(dataSnapshot) {
+            var deltas = {};
+            if (!dataSnapshot.hasChild("reversed")){
 	            var totalMoney = 0;
 	            dataSnapshot.child("from").forEach(function(childSnapshot) {
 	                var value = childSnapshot.val();
@@ -38,38 +68,10 @@
 	            dataSnapshot.child("to").forEach(function(childSnapshot) {
 	                deltas[childSnapshot.key] -= childSnapshot.val() * moneyPerUnit;
 	            });
-	            return deltas;
-	        },
-	        reverse: function(transactionId, userId) {
-	            var reason = prompt("Please enter a reason for reversing this transaction");
-	            if (reason.length < 3)
-	                alert('Reason needs to be at least 3 characters');
-	            else if (reason.length >= 128)
-	                alert('Reason needs to be less than 128 characters');
-	            else {
-	                firebase.database().ref("transactions").child(transactionId).child("reversed").set({
-	                    comment: reason,
-	                    by: userId,
-	                    at: firebase.database.ServerValue.TIMESTAMP
-	                });
-	            }
-	        },
-	        $$added: function(snapshot, prevChild) {
-	            var added = $firebaseArray.prototype.$$added.apply(this, arguments);
-	            added.deltas = this.getDeltas(snapshot);
-	            var previousTotals = prevChild === null ? null : totals[prevChild];
-	            totals[added.$id] = {};
-	            angular.forEach(added.deltas, function(delta, uid){
-	            	totals[added.$id][uid] = (prevChild === null ? 0 : totals[prevChild][uid]) + delta;
-	            });
-	            return added;
-	        },
-	        $$updated: function(snapshot) {
-	            $firebaseArray.prototype.$$updated.apply(this, arguments);
-	            this.$getRecord(snapshot.key).deltas = this.getDeltas(snapshot);
-	            return true;
-	        }
-	    })(firebase.database().ref("transactions"));
+            }
+            return deltas;
+        }
+
 	}
 
 })();

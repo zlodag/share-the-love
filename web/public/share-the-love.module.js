@@ -1,5 +1,5 @@
 "use strict";
 (function() {
     angular
-        .module("shareTheLove", ["firebase"]);
+        .module("shareTheLove", ["firebase","ngMessages","ui.router"]);
 })();
