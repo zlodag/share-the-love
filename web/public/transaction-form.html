@@ -34,7 +34,7 @@
 				</div>
 			</div>
 			<div ng-switch-when="even" class="form-group">
-				<label class="control-label col-xs-6">Select $ctrl.users</label>
+				<label class="control-label col-xs-6">Select users</label>
 				<ul class="col-xs-6 list-unstyled">
 					<li ng-repeat="user in $ctrl.users track by user.$id" class="checkbox">
 						<label><input type="checkbox" ng-model="data.toEven[user.$id]">{{ user.name }}</label>
