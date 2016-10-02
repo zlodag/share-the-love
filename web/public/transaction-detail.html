@@ -1,0 +1,49 @@
+<div>
+    <ul class="list-unstyled">
+        <li ng-bind="$ctrl.transaction.record.$priority | date:'medium'"/>
+        <li>
+            Entered by <b ng-bind="$ctrl.users.$getRecord($ctrl.transaction.record.by).name"></b>
+        </li>
+        <li>
+            <em ng-bind="$ctrl.transaction.record.comment"></em>
+        </li>
+        <li ng-repeat="(uid, value) in $ctrl.transaction.record.from">
+            <b>{{ $ctrl.users.$getRecord(uid).name }}</b>
+            <span>paid {{ value/100 | currency }}
+            </span>
+            <span ng-if="$ctrl.transaction.record.to[uid]" ng-init="ratio = $ctrl.transaction.record.to[uid]">and received {{ ratio }} part{{ ratio === 1 ? '' : 's'}}
+            </span>
+        </li>
+        <li ng-repeat="(uid, value) in $ctrl.transaction.record.to" ng-if="!$ctrl.transaction.record.from[uid]">
+            <b>{{ $ctrl.users.$getRecord(uid).name }}</b>
+            <span>received {{ value }} part{{ value === 1 ? '' : 's'}}
+            </span>
+        </li>
+    </ul>
+</div>
+<div>
+    <dl class="dl-horizontal">
+        <dt ng-repeat-start="user in $ctrl.users" ng-bind="user.name" ng-class="'text-' + ($ctrl.transaction.totals[user.$id] < 0 ? 'danger' : 'success')"/>
+        <dd ng-repeat-end>
+            <span ng-bind="$ctrl.transaction.totals[user.$id] / 100 | currency"></span>
+            <span ng-if="$ctrl.transaction.deltas[user.$id]" ng-class="'text-' + ($ctrl.transaction.deltas[user.$id] < 0 ? 'danger' : 'success')">
+                <span ng-if="!$ctrl.transaction.record.reversed">({{ $ctrl.transaction.deltas[user.$id] / 100 | currency }})</span>
+                <del ng-if="$ctrl.transaction.record.reversed">({{ $ctrl.transaction.deltas[user.$id] / 100 | currency }})</del>
+            </span>
+        </dd>
+    </dl>
+</div>
+<div ng-if="!$ctrl.transaction.record.reversed">
+    <button class="btn btn-danger" type="button" ng-click="$ctrl.reverse($ctrl.transaction.record.$id)">Delete</button>
+</div>
+<div ng-if="$ctrl.transaction.record.reversed">
+    <ul class="list-unstyled">
+        <li ng-bind="$ctrl.transaction.record.reversed.at | date:'medium'"/>
+        <li>
+            Deleted by <b ng-bind="$ctrl.users.$getRecord($ctrl.transaction.record.reversed.by).name"></b>
+        </li>
+        <li>
+            <em ng-bind="$ctrl.transaction.record.reversed.comment"></em>
+        </li>
+    </ul>
+</div>
