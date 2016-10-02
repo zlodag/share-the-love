@@ -8,10 +8,10 @@
             users: "<",
             transactions: "<"
         },
-        controller: ["$scope", "Auth", controller]
+        controller: ["$scope", "Auth", "$state", controller]
     });
 
-    function controller($scope, Auth){
+    function controller($scope, Auth, $state){
 
         $scope.transactionTypes = [{
             id : "single",
@@ -104,7 +104,9 @@
                     return false;
             }
             console.log(transaction);
-            list.$add(transaction);
+            list.$add(transaction).then(function(ref) {
+                $state.go('transactions.detail', {transactionId: ref.key});
+            });
         }
 
     }

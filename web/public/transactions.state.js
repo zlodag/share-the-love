@@ -37,10 +37,6 @@
 				}]
 			},
 			component: 'transactionDetail'
-		}).state({
-			name: 'about',
-			url: '/about',
-			template: '<h3>Its the UI-Router NEW NEW NEW world app!</h3>'
 		});
 	});
 })();

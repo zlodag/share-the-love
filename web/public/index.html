@@ -26,8 +26,10 @@
 <!--         <script src="https://cdn.firebase.com/libs/angularfire/2.0.2/angularfire.min.js"></script> -->
         <script src="angularfire.min.js"></script>
         <script src="share-the-love.module.js"></script>
+        <script src="home.state.js"></script>
+        <script src="home.component.js"></script>
+        <script src="navigation-bar.component.js"></script>
         <script src="auth.factory.js"></script>
-        <script src="auth.state.js"></script>
         <script src="users.factory.js"></script>
         <script src="transactions-promise.factory.js"></script>
         <script src="transactions.state.js"></script>
@@ -38,9 +40,7 @@
 <!--         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
     </head>
     <body class="container">
-        <a ui-sref="about" ui-sref-active="active">About</a>
-        <a ui-sref="transactions.all" ui-sref-active="active">Transactions</a>
-        <a ui-sref="transactions.new" ui-sref-active="active">New</a>
+        <navigation-bar></navigation-bar>
         <ui-view></ui-view>
     </body>
 </html>

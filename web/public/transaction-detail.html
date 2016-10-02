@@ -1,12 +1,10 @@
 <div>
+    <blockquote>
+        <p ng-bind="$ctrl.transaction.record.comment"></p>
+        <footer>Entered by {{ $ctrl.users.$getRecord($ctrl.transaction.record.by).name }} at {{ $ctrl.transaction.record.$priority | date:'medium' }}</footer>
+    </blockquote>
+
     <ul class="list-unstyled">
-        <li ng-bind="$ctrl.transaction.record.$priority | date:'medium'"/>
-        <li>
-            Entered by <b ng-bind="$ctrl.users.$getRecord($ctrl.transaction.record.by).name"></b>
-        </li>
-        <li>
-            <em ng-bind="$ctrl.transaction.record.comment"></em>
-        </li>
         <li ng-repeat="(uid, value) in $ctrl.transaction.record.from">
             <b>{{ $ctrl.users.$getRecord(uid).name }}</b>
             <span>paid {{ value/100 | currency }}

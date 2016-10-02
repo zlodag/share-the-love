@@ -20,6 +20,7 @@
             var authObj = Auth.$getAuth();
             if (authObj !== null) {
                 var reason = prompt("Please enter a reason for reversing this transaction");
+                if (reason === null) return;
                 if (reason.length < 3)
                     alert('Reason needs to be at least 3 characters');
                 else if (reason.length >= 128)

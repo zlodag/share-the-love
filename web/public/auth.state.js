@@ -8,7 +8,7 @@
 
         $stateProvider.state({
             name: 'auth',
-            url: '/auth',
+            url: '/home',
             templateUrl : "auth.html",
             controller: ["$scope", "Auth", controller]
         });

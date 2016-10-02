@@ -11,9 +11,9 @@
             <td>
                 <ul class="list-unstyled">
                     <li>
-                        <em ng-bind="transaction.comment"></em>
+                        <a ui-sref="transactions.detail({ transactionId: transaction.$id })" ng-bind="transaction.comment"></a>
                     </li>
-                    <li><a ui-sref="transactions.detail({ transactionId: transaction.$id })" ng-bind="transaction.$priority | date:'medium'"></a></li>
+                    <li><em ng-bind="transaction.$priority | date:'medium'"></em></li>
                 </ul>
             </td>
             <td>
