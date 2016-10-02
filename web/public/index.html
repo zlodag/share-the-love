@@ -4,15 +4,25 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Share the Love</title>
-<!--         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
+        <script src="https://code.angularjs.org/1.5.8/angular-messages.min.js"></script>
+        <script src="angular-ui-router.js"></script>
         <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase-database.js"></script> -->
+        <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase-auth.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase-database.js"></script>
+        <script src="https://cdn.firebase.com/libs/angularfire/2.0.2/angularfire.min.js"></script>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+<!--
         <script src="angular.js"></script>
         <script src="angular-messages.js"></script>
         <script src="angular-ui-router.js"></script>
         <script src="firebase-app.js"></script>
-        <script src="firebase-database.js"></script>
         <script src="firebase-auth.js"></script>
+        <script src="firebase-database.js"></script>
+        <script src="angularfire.min.js"></script>
+        <link rel="stylesheet" href="bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+ -->
         <script>
             var config = {
                 apiKey: "AIzaSyCwV6upXvsdSwkSZd4FuwJGfeQUG-O-8lE",
@@ -23,8 +33,6 @@
             };
             firebase.initializeApp(config);
         </script>
-<!--         <script src="https://cdn.firebase.com/libs/angularfire/2.0.2/angularfire.min.js"></script> -->
-        <script src="angularfire.min.js"></script>
         <script src="share-the-love.module.js"></script>
         <script src="home.state.js"></script>
         <script src="home.component.js"></script>
@@ -36,8 +44,6 @@
         <script src="transactions.component.js"></script>
         <script src="transaction-detail.component.js"></script>
         <script src="transaction-form.component.js"></script>
-        <link rel="stylesheet" href="bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<!--         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"> -->
     </head>
     <body class="container">
         <navigation-bar></navigation-bar>
