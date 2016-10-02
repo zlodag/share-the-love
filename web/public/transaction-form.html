@@ -1,8 +1,10 @@
+<!-- <pre ng-bind="$ctrl | json"></pre> -->
+<button ng-click="logger('sdf')">Click me</button>
 <form class="form-horizontal" name="myForm" ng-submit="submit()">
 	<fieldset>
 		<legend>From</legend>
 		<ul class="list-unstyled">
-			<li ng-repeat="user in users track by user.$id" class="form-group">
+			<li ng-repeat="user in $ctrl.users track by user.$id" class="form-group">
 				<label class="col-xs-6 control-label" ng-bind="user.name"></label>
 				<div class="col-xs-6">
 					<div class="input-group">
@@ -29,19 +31,19 @@
 			<div ng-switch-when="single" class="form-group">
 				<label class="control-label col-xs-6">Select a user</label>
 				<div class="col-xs-6">
-					<select ng-options="user.name for user in users track by user.$id" ng-model="data.toSingle" class="form-control"></select>
+					<select ng-options="user.name for user in $ctrl.users track by user.$id" ng-model="data.toSingle" class="form-control"></select>
 				</div>
 			</div>
 			<div ng-switch-when="even" class="form-group">
-				<label class="control-label col-xs-6">Select users</label>
+				<label class="control-label col-xs-6">Select $ctrl.users</label>
 				<ul class="col-xs-6 list-unstyled">
-					<li ng-repeat="user in users track by user.$id" class="checkbox">
+					<li ng-repeat="user in $ctrl.users track by user.$id" class="checkbox">
 						<label><input type="checkbox" ng-model="data.toEven[user.$id]">{{ user.name }}</label>
 					</li>
 				</ul>
 			</div>
 			<ul ng-switch-when="uneven" class="list-unstyled">
-				<li ng-repeat="user in users track by user.$id" class="form-group">
+				<li ng-repeat="user in $ctrl.users track by user.$id" class="form-group">
 					<label class="col-xs-6 control-label" ng-bind="user.name"></label>
 					<div class="col-xs-6">
 						<div class="input-group">
