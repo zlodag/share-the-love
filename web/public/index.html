@@ -5,6 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Share the Love</title>
 
+<!--
         <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.5.8/angular.min.js"></script>
         <script src="https://code.angularjs.org/1.5.8/angular-messages.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/1.0.0-beta.3/angular-ui-router.min.js"></script>
@@ -13,16 +14,16 @@
         <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase-database.js"></script>
         <script src="https://cdn.firebase.com/libs/angularfire/2.0.2/angularfire.min.js"></script>
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
-<!--
-        <script src="angular.js"></script>
-        <script src="angular-messages.js"></script>
-        <script src="angular-ui-router.js"></script>
-        <script src="firebase-app.js"></script>
-        <script src="firebase-auth.js"></script>
-        <script src="firebase-database.js"></script>
-        <script src="angularfire.min.js"></script>
-        <link rel="stylesheet" href="bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+        <script src="assets/js/ui-bootstrap-tpls.js"></script>
  -->
+        <script src="assets/js/angular.min.js"></script>
+        <script src="assets/js/angular-messages.min.js"></script>
+        <script src="assets/js/angular-ui-router.min.js"></script>
+        <script src="assets/js/firebase-app.js"></script>
+        <script src="assets/js/firebase-auth.js"></script>
+        <script src="assets/js/firebase-database.js"></script>
+        <script src="assets/js/angularfire.min.js"></script>
+        <link rel="stylesheet" href="assets/css/bootstrap.min.css">
         <script>
             var config = {
                 apiKey: "AIzaSyCwV6upXvsdSwkSZd4FuwJGfeQUG-O-8lE",
@@ -33,20 +34,20 @@
             };
             firebase.initializeApp(config);
         </script>
-        <script src="share-the-love.module.js"></script>
-        <script src="home.state.js"></script>
-        <script src="home.component.js"></script>
-        <script src="navigation-bar.component.js"></script>
-        <script src="auth.factory.js"></script>
-        <script src="users.factory.js"></script>
-        <script src="transactions-promise.factory.js"></script>
-        <script src="transactions.state.js"></script>
-        <script src="transactions.component.js"></script>
-        <script src="transaction-detail.component.js"></script>
-        <script src="transaction-form.component.js"></script>
+        <script src="app/app.module.js"></script>
+        <script src="app/app.states.js"></script>
+        <script src="app/shared/auth/authFactory.js"></script>
+        <script src="app/components/signIn/signInComponent.js"></script>
+        <script src="app/components/authed/authedComponent.js"></script>
+        <script src="app/components/admin/adminComponent.js"></script>
+        <script src="app/components/spreadsheets/spreadsheetsComponent.js"></script>
+        <script src="app/components/spreadsheet/spreadsheetComponent.js"></script>
+        <script src="app/components/spreadsheet/spreadsheetAdminComponent.js"></script>
+        <script src="app/components/transactions/transactionsComponent.js"></script>
+        <script src="app/components/transactionNew/transactionNewComponent.js"></script>
     </head>
     <body class="container">
-        <navigation-bar></navigation-bar>
+        <!-- <navigation></navigation> -->
         <ui-view></ui-view>
     </body>
 </html>

@@ -4,40 +4,6 @@
 	.module("shareTheLove")
 	.config(function($stateProvider) {
 		$stateProvider.state({
-			name: 'transactions',
-			abstract: true,
-			template: "<ui-view/>",
-			resolve: {
-				users: ["Users", function(Users){
-					return Users.$loaded();
-				}],
-				currentAuth: ["Auth", function(Auth) {
-				    return Auth.$requireSignIn();
-				}],
-				transactions: "TransactionsPromise"
-			}
-		}).state({
-			name: 'transactions.all',
-			url: '/transactions',
-			component: 'transactionList'
-		}).state({
-			name: 'transactions.new',
-			url: '/transactions/new',
-			component: 'transactionForm'
-		}).state({
-			name: 'transactions.detail',
-			url: '/transactions/{transactionId}',
-			resolve: {
-				transaction: ["transactions", "$stateParams", function(transactions, $stateParams) {
-					return {
-						record: transactions.list.$getRecord($stateParams.transactionId),
-						deltas: transactions.deltas[$stateParams.transactionId],
-						totals: transactions.totals[$stateParams.transactionId]
-					};
-				}]
-			},
-			component: 'transactionDetail'
-		});
 	});
 })();
 

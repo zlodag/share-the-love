@@ -1,0 +1,6 @@
+<ul class="nav nav-pills">
+	<li ng-repeat="spreadsheet in $ctrl.spreadsheets" ui-sref-active="active">
+		<a ui-sref=".spreadsheet({spreadsheetId : spreadsheet.$id})" ng-bind="spreadsheet.$value"></a>
+	</li>
+</ul>
+<ui-view></ui-view>

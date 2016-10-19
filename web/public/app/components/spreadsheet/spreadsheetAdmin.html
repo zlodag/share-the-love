@@ -1,0 +1,28 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">Current users</h3>
+	</div>
+	<div class="panel-body">
+		<ol class="form-inline">
+			<li ng-repeat="user in $ctrl.users">
+				<span>{{ user.name }} ({{ user.$id }})</span>
+				<span ng-if="user.admin" class="label label-primary">Admin</span>
+				<span ng-if="user.active" class="label label-default">Active</span>
+
+				<button class="btn btn-default" ng-click="$ctrl.toggleProperty(user,'active')" ng-bind="user.active ? 'Disable' : 'Activate'"></button>
+
+				<button ng-if="user.$id !== $ctrl.authObj.uid" class="btn btn-warning" ng-click="$ctrl.toggleProperty(user,'admin')" ng-bind="user.admin ? 'Make non-admin' : 'Make admin'"></button>
+
+				<div class="input-group">
+					<input type="text" class="form-control" placeholder="Enter name" ng-model="newName" ng-minlength="3" ng-maxlength="127" required ng-init="newName = user.name"/>
+					<span class="input-group-btn">
+						<button class="btn btn-default" type="button" ng-click="$ctrl.changeName(user.$id, newName)">Change name!</button>
+					</span>
+				</div>
+<!--
+				<input type="text" />
+				<button class="btn btn-default" ng-click="$ctrl.changeName(user.$id, newName)">Change name!</button> -->
+			</li>
+		</ol>
+	</div>
+</div>

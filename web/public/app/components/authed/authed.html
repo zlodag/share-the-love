@@ -1,0 +1,15 @@
+<div class="media">
+	<div class="media-left">
+		<img ng-src="{{ $ctrl.authObj.photoURL }}"/>
+	</div>
+	<div class="media-body">
+		<h4 class="media-heading" ng-bind="$ctrl.authObj.displayName"></h4>
+		<p ng-bind="$ctrl.authObj.email"></p>
+		<button class="btn btn-default" ng-click="$ctrl.signOut()">Sign out</button>
+	</div>
+</div>
+<ul class="nav nav-tabs">
+	<li ui-sref-active="active"><a ui-sref=".spreadsheets">Spreadsheets</a></li>
+	<li ui-sref-active="active"><a ui-sref=".admin">Admin</a></li>
+</ul>
+<ui-view></ui-view>
