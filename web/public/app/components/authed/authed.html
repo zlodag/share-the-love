@@ -1,15 +1,16 @@
-<div class="media">
-	<div class="media-left">
-		<img ng-src="{{ $ctrl.authObj.photoURL }}"/>
+<nav class="navbar navbar-default">
+	<div class="container">
+		<ul class="nav navbar-nav">
+			<li ui-sref-active="active"><a ui-sref=".spreadsheets">Spreadsheets</a></li>
+			<li ui-sref-active="active"><a ui-sref=".admin">Admin</a></li>
+		</ul>
+		<div class="navbar-right">
+			<p class="navbar-text">Signed in as <span ng-bind="$ctrl.authObj.displayName"></span></p>
+    		<img ng-src="{{ $ctrl.authObj.photoURL }}" class="navbar-brand" />
+			<button type="button" class="btn btn-default navbar-btn" ng-click="$ctrl.signOut()">Sign out</button>
+		</div>
 	</div>
-	<div class="media-body">
-		<h4 class="media-heading" ng-bind="$ctrl.authObj.displayName"></h4>
-		<p ng-bind="$ctrl.authObj.email"></p>
-		<button class="btn btn-default" ng-click="$ctrl.signOut()">Sign out</button>
-	</div>
+</nav>
+<div class="container">
+	<ui-view></ui-view>
 </div>
-<ul class="nav nav-tabs">
-	<li ui-sref-active="active"><a ui-sref=".spreadsheets">Spreadsheets</a></li>
-	<li ui-sref-active="active"><a ui-sref=".admin">Admin</a></li>
-</ul>
-<ui-view></ui-view>
