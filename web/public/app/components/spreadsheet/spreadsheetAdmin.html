@@ -1,28 +1,36 @@
+<label>
+	<input type="checkbox" ng-model="admin"/>
+	Admin
+</label>
+
+<button type="button" class="btn btn-default" ng-class="{active: admin}" ng-click="admin = !admin">Admin</button>
+
 <div class="panel panel-default">
 	<div class="panel-heading">
-		<h3 class="panel-title">Current users</h3>
+		<h3 class="panel-title">Users</h3>
 	</div>
-	<div class="panel-body">
-		<ol class="form-inline">
-			<li ng-repeat="user in $ctrl.users">
-				<span>{{ user.name }} ({{ user.$id }})</span>
+	<ul class="list-group">
+		<li ng-repeat="user in $ctrl.users" class="list-group-item">
+			<div class="list-group-item-heading">
+				<abbr ng-bind="user.name" title="{{ user.$id }}"></abbr>
 				<span ng-if="user.admin" class="label label-primary">Admin</span>
-				<span ng-if="user.active" class="label label-default">Active</span>
+				<span ng-if="user.active" class="label label-success">Active</span>
+			</div>
+			<div ng-if="admin" class="form-inline">
+				<div class="form-group" ng-init="newName = user.name">
+					<div class="input-group">
+						<input type="text" class="form-control" placeholder="Enter name" ng-model="newName" ng-minlength="3" ng-maxlength="127" required/>
+						<span class="input-group-btn">
+							<button class="btn btn-default" type="button" ng-click="$ctrl.changeName(user.$id, newName)" ng-disabled="newName === user.name">Change name!</button>
 
-				<button class="btn btn-default" ng-click="$ctrl.toggleProperty(user,'active')" ng-bind="user.active ? 'Disable' : 'Activate'"></button>
+							<button class="btn btn-default" ng-class="{'btn-success': !user.active}" ng-click="$ctrl.toggleProperty(user,'active')" ng-bind="user.active ? 'Make inactive' : 'Activate'"></button>
 
-				<button ng-if="user.$id !== $ctrl.authObj.uid" class="btn btn-warning" ng-click="$ctrl.toggleProperty(user,'admin')" ng-bind="user.admin ? 'Make non-admin' : 'Make admin'"></button>
+							<button ng-if="user.$id !== $ctrl.authObj.uid" class="btn btn-default" ng-class="{'btn-primary': !user.admin}" ng-click="$ctrl.toggleProperty(user,'admin')" ng-bind="user.admin ? 'Make non-admin' : 'Make admin'"></button>
 
-				<div class="input-group">
-					<input type="text" class="form-control" placeholder="Enter name" ng-model="newName" ng-minlength="3" ng-maxlength="127" required ng-init="newName = user.name"/>
-					<span class="input-group-btn">
-						<button class="btn btn-default" type="button" ng-click="$ctrl.changeName(user.$id, newName)">Change name!</button>
-					</span>
+						</span>
+					</div>
 				</div>
-<!--
-				<input type="text" />
-				<button class="btn btn-default" ng-click="$ctrl.changeName(user.$id, newName)">Change name!</button> -->
-			</li>
-		</ol>
-	</div>
+			</div>
+		</li>
+	</ul>
 </div>

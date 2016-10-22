@@ -10,7 +10,7 @@
             <td>
                 <ul class="list-unstyled">
                     <li>
-                        <a ui-sref="transactions.detail({ transactionId: transaction.$id })" ng-bind="transaction.comment"></a>
+                        <a ui-sref="^.transaction({ transactionId: transaction.$id })" ng-bind="transaction.comment"></a>
                     </li>
                     <li><em ng-bind="transaction.$priority | date:'medium'"></em></li>
                 </ul>

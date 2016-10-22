@@ -36,20 +36,18 @@
             resolve: {
                 spreadsheet: ["$stateParams", "spreadsheets", function($stateParams, spreadsheets){
                     return spreadsheets.$getRecord($stateParams.spreadsheetId);
-                     // $firebaseArray(firebase.database().ref("users").child(authObj.uid)).$loaded();
                 }],
                 users: ["$stateParams", "$firebaseArray", function($stateParams, $firebaseArray){
                     return $firebaseArray(firebase.database().ref("spreadsheets").child($stateParams.spreadsheetId).child("users")).$loaded();
+                }],
+                me: ["authObj", "users", function(authObj, users){
+                    return users.$getRecord(authObj.uid);
                 }],
                 transactions: ["$stateParams", "$firebaseArray", function($stateParams, $firebaseArray) {
                     return $firebaseArray(firebase.database().ref("transactions").child($stateParams.spreadsheetId)).$loaded();
                 }]
             },
             component: 'spreadsheet'
-        // }).state({
-        //     name: 'authed.spreadsheet.details',
-        //     url: '/details',
-        //     component: 'spreadsheetDetails'
         }).state({
             name: 'authed.spreadsheets.spreadsheet.transactions',
             url: '/transactions',
@@ -67,45 +65,20 @@
             name: 'authed.spreadsheets.spreadsheet.new',
             url: '/new',
             component: 'transactionNew'
-
-
-        // }).state({          name: 'transactions',
-        //     abstract: true,
-        //     template: "<ui-view/>",
-        //     resolve: {
-        //         users: ["Users", function(Users){
-        //             return Users.$loaded();
-        //         }],
-        //         currentAuth: ["Auth", function(Auth) {
-        //             return Auth.$requireSignIn();
-        //         }],
-        //         transactions: "TransactionsPromise"
-        //     }
-        // }).state({
-        //     name: 'transactions.all',
-        //     url: '/transactions',
-        //     component: 'transactionList'
-        // }).state({
-        //     name: 'transactions.new',
-        //     url: '/transactions/new',
-        //     component: 'transactionForm'
-        // }).state({
-        //     name: 'transactions.detail',
-        //     url: '/transactions/{transactionId}',
-        //     resolve: {
-        //         transaction: ["transactions", "$stateParams", function(transactions, $stateParams) {
-        //             return {
-        //                 record: transactions.list.$getRecord($stateParams.transactionId),
-        //                 deltas: transactions.deltas[$stateParams.transactionId],
-        //                 totals: transactions.totals[$stateParams.transactionId]
-        //             };
-        //         }]
-        //     },
-        //     component: 'transactionDetail'
+        }).state({
+            name: 'authed.spreadsheets.spreadsheet.transaction',
+            url: '/:transactionId',
+            resolve: {
+                transaction: ["$stateParams", "transactions", function($stateParams, transactions){
+                    console.log(transactions);
+                    return transactions.$getRecord($stateParams.transactionId);
+                }]
+            },
+            component: 'transactionDetail'
         });
 
         $urlRouterProvider.otherwise('/signIn');
-    }
 
+    }
 
 })();

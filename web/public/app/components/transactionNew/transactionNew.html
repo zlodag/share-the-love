@@ -1,73 +1,56 @@
-<pre ng-bind="$ctrl.users | json"></pre>
-<form class="form-horizontal" name="myForm" ng-submit="submit()">
+<!-- <pre ng-bind="$ctrl.data | json"></pre>
+ --><form name="myForm" ng-submit="myForm.$valid && $ctrl.submit()">
 	<fieldset>
 		<legend>From</legend>
-		<ul class="list-unstyled">
-			<li ng-repeat="user in $ctrl.users track by user.$id" class="form-group">
-				<label class="col-xs-6 control-label" ng-bind="user.name"></label>
-				<div class="col-xs-6">
-					<div class="input-group">
-						<span class="input-group-addon">$</span>
-						<input class="form-control" type="number" min="0" step="0.01" ng-model="data.from[user.$id]" />
-						<!-- <input ng-model="from[user.$id]" type="number"/> -->
-						<!-- <input ng-model="from[user.$id]" type="text" currency/> -->
-					</div>
-				</div>
-			</li>
-		</ul>
+		<div ng-repeat="user in $ctrl.users track by user.$id" class="form-group">
+			<label for="from_{{user.$id}}" ng-bind="user.name"></label>
+			<div class="input-group">
+				<span class="input-group-addon">$</span>
+				<input id="from_{{user.$id}}" name="from_{{user.$id}}" class="form-control" type="number" min="0" step="0.01" ng-model="$ctrl.data.from[user.$id]" />
+			</div>
+		</div>
 	</fieldset>
 	<fieldset>
 		<legend>To</legend>
 		<div class="form-group">
-			<label class="control-label col-xs-6">Transaction type</label>
-			<ul class="col-xs-6 list-unstyled">
-				<li ng-repeat="type in transactionTypes track by type.id" class="radio">
-					<label><input type="radio" ng-model="data.type" ng-value="type.id">{{ type.label }}</label>
-				</li>
-			</ul>
+			<label class="control-label">Transaction type</label>
+			<div ng-repeat="transactionType in $ctrl.transactionTypes track by transactionType.id" class="radio">
+				<label><input type="radio" ng-model="$ctrl.data.type" ng-value="transactionType.id">{{ transactionType.label }}</label>
+			</div>
 		</div>
-		<div ng-switch="data.type">
+		<div ng-switch="$ctrl.data.type">
 			<div ng-switch-when="single" class="form-group">
-				<label class="control-label col-xs-6">Select a user</label>
-				<div class="col-xs-6">
-					<select ng-options="user.name for user in $ctrl.users track by user.$id" ng-model="data.toSingle" class="form-control"></select>
-				</div>
+				<label class="control-label">Select a user</label>
+				<select ng-options="user.name for user in $ctrl.users track by user.$id" ng-model="$ctrl.data.toSingle" class="form-control"></select>
 			</div>
 			<div ng-switch-when="even" class="form-group">
-				<label class="control-label col-xs-6">Select users</label>
-				<ul class="col-xs-6 list-unstyled">
-					<li ng-repeat="user in $ctrl.users track by user.$id" class="checkbox">
-						<label><input type="checkbox" ng-model="data.toEven[user.$id]">{{ user.name }}</label>
-					</li>
-				</ul>
+				<label class="control-label">Select users</label>
+				<div ng-repeat="user in $ctrl.users track by user.$id" class="checkbox">
+					<label><input type="checkbox" ng-model="$ctrl.data.toEven[user.$id]">{{ user.name }}</label>
+				</div>
 			</div>
-			<ul ng-switch-when="uneven" class="list-unstyled">
-				<li ng-repeat="user in $ctrl.users track by user.$id" class="form-group">
-					<label class="col-xs-6 control-label" ng-bind="user.name"></label>
-					<div class="col-xs-6">
-						<div class="input-group">
-							<input class="form-control" type="number" min="0" step="1" ng-model="data.toUneven[user.$id]" />
-							<span class="input-group-addon">parts</span>
-						</div>
-					</div>
-				</li>
-			</ul>
+			<div ng-switch-when="uneven" ng-repeat="user in $ctrl.users track by user.$id" class="form-group">
+				<label for="to_{{user.$id}}" ng-bind="user.name"></label>
+				<div class="input-group">
+					<input id="to_{{user.$id}}" name="to_{{user.$id}}" class="form-control" type="number" min="0" step="1" ng-model="$ctrl.data.toUneven[user.$id]" />
+					<span class="input-group-addon">parts</span>
+				</div>
+			</div>
 		</div>
 	</fieldset>
-	<div class="form-group" ng-class="{'has-success': myForm.comment.$valid, 'has-error': myForm.comment.$touched && myForm.comment.$invalid}">
-		<label class="col-xs-6 control-label" for="comment">Enter a comment</label>
-		<div class="col-xs-6">
-			<input class="form-control" type="text" id="comment" name="comment" minlength="3" maxlength="127" required title="3 to 127 characters" placeholder="Comment" ng-model="data.comment"/>
+	<fieldset>
+		<legend>Comment</legend>
+		<div class="form-group" ng-class="{'has-success': myForm.comment.$valid, 'has-error': myForm.comment.$touched && myForm.comment.$invalid}">
+			<label class="control-label" for="comment">Enter a comment</label>
+			<input class="form-control" type="text" id="comment" name="comment" minlength="3" maxlength="127" required title="3 to 127 characters" placeholder="Comment" ng-model="$ctrl.data.comment"/>
 			<div ng-messages="myForm.comment.$error" ng-show="myForm.comment.$touched" class="help-block">
 				<div ng-message="required">Please enter a value for this field.</div>
 				<div ng-message="minlength">This field must be at least 3 characters long.</div>
 				<div ng-message="maxlength">This field can be at most 127 characters long.</div>
 			</div>
 		</div>
-	</div>
+	</fieldset>
 	<div class="form-group">
-		<div class="col-xs-offset-6 col-xs-6">
-			<input type="submit" class="btn btn-primary btn-block" />
-		</div>
+		<input type="submit" class="btn btn-primary btn-block" />
 	</div>
 </form>

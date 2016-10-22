@@ -1,6 +1,6 @@
 <form name="newSpreadsheetForm" ng-submit="$ctrl.newSpreadsheet(newSpreadsheetName)">
 	<div class="form-group">
-		<label for="newSpreadsheetName">New spreadsheet</label>
+		<label class="control-label" for="newSpreadsheetName">New spreadsheet</label>
 		<div class="input-group">
 			<input id="newSpreadsheetName" class="form-control" name="newSpreadsheetName" type="text" ng-model="newSpreadsheetName" placeholder="Name" ng-minlength="3" ng-maxlength="127" required/>
 			<span class="input-group-btn">
@@ -11,7 +11,7 @@
 </form>
 <form name="joinSpreadsheetForm" ng-submit="$ctrl.joinSpreadsheet(joinSpreadsheetId)">
 	<div class="form-group">
-		<label for="joinSpreadsheetId">Join spreadsheet</label>
+		<label class="control-label" for="joinSpreadsheetId">Join spreadsheet</label>
 		<div class="input-group">
 			<input id="joinSpreadsheetId" class="form-control" name="joinSpreadsheetId" type="text" ng-model="joinSpreadsheetId" placeholder="Paste id here" required/>
 			<span class="input-group-btn">

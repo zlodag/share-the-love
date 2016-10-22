@@ -1,6 +1,59 @@
 <ul class="nav nav-tabs">
 	<li ui-sref-active="active"><a ui-sref=".transactions">Transactions</a></li>
 	<li ui-sref-active="active"><a ui-sref=".new">New</a></li>
-	<li ui-sref-active="active" ng-if="$ctrl.users.$getRecord($ctrl.authObj.uid).admin"><a ui-sref=".admin">Admin</a></li>
 </ul>
-<ui-view></ui-view>
+<ui-view>
+
+	<div ng-show="$ctrl.me.admin">
+
+		<div class="checkbox">
+			<label>
+				<input type="checkbox" ng-model="$ctrl.admin" />
+				Admin view
+			</label>
+		</div>
+
+		<form name="spreadsheetNameForm" ng-if="$ctrl.admin" ng-submit="$ctrl.changeSpreadsheetName(spreadsheetName)" ng-init="spreadsheetName = $ctrl.spreadsheet.$value">
+			<div class="form-group">
+				<label for="spreadsheetName">Change spreadsheet name</label>
+				<div class="input-group">
+					<input type="text" name="spreadsheetName" class="form-control" id="spreadsheetName" ng-model="spreadsheetName" ng-minlength="3" ng-maxlength="127" required/>
+					<span class="input-group-btn">
+						<input class="btn btn-default" type="submit" ng-disabled="spreadsheetNameForm.$invalid || spreadsheetName === $ctrl.spreadsheet.$value" value="Change!"/>
+					</span>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div class="panel panel-default">
+		<div class="panel-heading">
+			<h3 class="panel-title">Users</h3>
+		</div>
+		<ul class="list-group">
+			<li ng-repeat="user in $ctrl.users" class="list-group-item">
+				<div class="list-group-item-heading">
+					<abbr ng-bind="user.name" title="{{ user.$id }}"></abbr>
+					<span ng-if="user.admin" class="label label-primary">Admin</span>
+					<span ng-if="user.active" class="label label-success">Active</span>
+				</div>
+				<form name="userNameForm" ng-show="$ctrl.me.admin" ng-if="$ctrl.admin" class="form-inline" ng-init="userName = user.name" ng-submit="$ctrl.changeUserName(user.$id, userName)">
+					<div class="form-group">
+						<div class="input-group">
+							<input name="userName" type="text" class="form-control" placeholder="Enter name" ng-model="userName" ng-minlength="3" ng-maxlength="127" required/>
+							<span class="input-group-btn">
+								<input class="btn btn-default" type="submit" ng-disabled="userNameForm.$invalid || userName === user.name" value="Change!"/>
+
+								<button class="btn btn-default" ng-class="{'btn-success': !user.active}" ng-click="$ctrl.toggleProperty(user,'active')" ng-bind="user.active ? 'Make inactive' : 'Activate'"></button>
+
+								<button ng-if="user.$id !== $ctrl.me.$id" class="btn btn-default" ng-class="{'btn-primary': !user.admin}" ng-click="$ctrl.toggleProperty(user,'admin')" ng-bind="user.admin ? 'Make non-admin' : 'Make admin'"></button>
+
+							</span>
+						</div>
+					</div>
+				</form>
+			</li>
+		</ul>
+	</div>
+
+</ui-view>
