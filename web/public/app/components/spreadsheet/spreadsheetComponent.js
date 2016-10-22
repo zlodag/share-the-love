@@ -6,8 +6,8 @@
         templateUrl: "app/components/spreadsheet/spreadsheet.html",
         bindings : {
             users: "<",
-            me: "<",
-            spreadsheet: "<"
+            authObj: "<",
+            transactions: "<"
         },
         controller: controller
     });
@@ -16,16 +16,20 @@
 
         var ctrl = this;
 
+        ctrl.transactions.updateTotals();
+		ctrl.users.$watch(ctrl.transactions.updateTotals);
+		ctrl.transactions.$watch(ctrl.transactions.updateTotals);
+
 		ctrl.admin = false;
 
         this.changeUserName = function(uid, newName){
             ctrl.users.$ref().child(uid).child('name').set(newName);
         };
 
-		this.changeSpreadsheetName = function(spreadsheetName){
-			console.log(spreadsheetName);
-			firebase.database().ref("spreadsheets").child(ctrl.spreadsheet.$id).child('name').set(spreadsheetName);
-		};
+		// this.changeSpreadsheetName = function(spreadsheetName){
+		// 	console.log(spreadsheetName);
+		// 	firebase.database().ref("spreadsheets").child(ctrl.spreadsheet.$id).child('name').set(spreadsheetName);
+		// };
 
         this.toggleProperty = function(user, property){
             ctrl.users.$ref().child(user.$id).child(property).set(!user[property]);

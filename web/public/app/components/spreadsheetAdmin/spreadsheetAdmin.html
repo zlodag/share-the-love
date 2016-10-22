@@ -1,0 +1,45 @@
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">Users</h3>
+	</div>
+	<ul class="list-group">
+		<li ng-repeat="user in $ctrl.users track by user.$id" class="list-group-item">
+			<div class="list-group-item-heading">
+				<abbr ng-bind="user.name" title="{{ user.$id }}"></abbr>
+				<span ng-if="user.$id === $ctrl.authObj.uid" class="label label-danger">Me</span>
+				<span ng-if="user.admin" class="label label-primary">Admin</span>
+				<span ng-if="user.active" class="label label-success">Active</span>
+			</div>
+			<form name="userNameForm" class="form-inline" ng-submit="$ctrl.changeUserName(user, userName)"  ng-init="userName = user.name">
+				<div class="form-group">
+					<div class="input-group">
+						<input name="userName" type="text" class="form-control" placeholder="Enter name" ng-model="userName" ng-minlength="3" ng-maxlength="127" required/>
+						<span class="input-group-btn">
+							<input class="btn btn-default" type="submit" ng-disabled="userNameForm.$invalid || userName === user.name" value="Change display name"/>
+						</span>
+					</div>
+				</div>
+
+				<button ng-if="user.$id !== $ctrl.authObj.uid" class="btn btn-default" ng-class="{'btn-primary': !user.admin}" ng-click="$ctrl.toggleProperty(user,'admin')" ng-bind="user.admin ? 'Make non-admin' : 'Make admin'"></button>
+
+				<button class="btn btn-default" ng-class="{'btn-success': !user.active}" ng-click="$ctrl.toggleProperty(user,'active')" ng-bind="user.active ? 'Make inactive' : 'Activate'"></button>
+
+			</form>
+		</li>
+	</ul>
+</div>
+
+<div class="panel panel-default">
+	<div class="panel-heading">
+		<h3 class="panel-title">Applicants</h3>
+	</div>
+	<ul class="list-group">
+		<li ng-repeat="user in $ctrl.applicants track by user.$id" class="list-group-item">
+			<div class="list-group-item-heading">
+				<abbr ng-bind="user.$value" title="{{ user.$id }}"></abbr>
+			</div>
+			<button type="button" class="btn btn-success" ng-click="$ctrl.accept(user)">Accept</button>
+			<button type="button" class="btn btn-danger" ng-click="$ctrl.decline(user)">Decline</button>
+		</li>
+	</ul>
+</div>

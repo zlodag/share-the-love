@@ -1,6 +1,0 @@
-<ul class="nav nav-pills nav-stacked col-sm-2">
-	<li ng-repeat="spreadsheet in $ctrl.spreadsheets" ui-sref-active="active">
-		<a ui-sref=".spreadsheet({spreadsheetId : spreadsheet.$id})" ng-bind="spreadsheet.$value"></a>
-	</li>
-</ul>
-<ui-view class="col-sm-10"></ui-view>

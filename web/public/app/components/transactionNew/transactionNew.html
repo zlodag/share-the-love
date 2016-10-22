@@ -2,7 +2,7 @@
  --><form name="myForm" ng-submit="myForm.$valid && $ctrl.submit()">
 	<fieldset>
 		<legend>From</legend>
-		<div ng-repeat="user in $ctrl.users track by user.$id" class="form-group">
+		<div ng-repeat="user in $ctrl.users | filter : {'active':true} : true track by user.$id" class="form-group">
 			<label for="from_{{user.$id}}" ng-bind="user.name"></label>
 			<div class="input-group">
 				<span class="input-group-addon">$</span>
@@ -21,15 +21,15 @@
 		<div ng-switch="$ctrl.data.type">
 			<div ng-switch-when="single" class="form-group">
 				<label class="control-label">Select a user</label>
-				<select ng-options="user.name for user in $ctrl.users track by user.$id" ng-model="$ctrl.data.toSingle" class="form-control"></select>
+				<select ng-options="user.name for user in $ctrl.users | filter : {'active':true} : true track by user.$id" ng-model="$ctrl.data.toSingle" class="form-control"></select>
 			</div>
 			<div ng-switch-when="even" class="form-group">
 				<label class="control-label">Select users</label>
-				<div ng-repeat="user in $ctrl.users track by user.$id" class="checkbox">
+				<div ng-repeat="user in $ctrl.users | filter : {'active':true} : true track by user.$id" class="checkbox">
 					<label><input type="checkbox" ng-model="$ctrl.data.toEven[user.$id]">{{ user.name }}</label>
 				</div>
 			</div>
-			<div ng-switch-when="uneven" ng-repeat="user in $ctrl.users track by user.$id" class="form-group">
+			<div ng-switch-when="uneven" ng-repeat="user in $ctrl.users | filter : {'active':true} : true track by user.$id" class="form-group">
 				<label for="to_{{user.$id}}" ng-bind="user.name"></label>
 				<div class="input-group">
 					<input id="to_{{user.$id}}" name="to_{{user.$id}}" class="form-control" type="number" min="0" step="1" ng-model="$ctrl.data.toUneven[user.$id]" />

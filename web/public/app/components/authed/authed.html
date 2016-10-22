@@ -1,16 +1,46 @@
 <nav class="navbar navbar-default">
-	<div class="container">
+	<div class="container-fluid">
 		<ul class="nav navbar-nav">
-			<li ui-sref-active="active"><a ui-sref=".spreadsheets">Spreadsheets</a></li>
-			<li ui-sref-active="active"><a ui-sref=".admin">Admin</a></li>
+			<li ui-sref-active-eq="active"><a ui-sref=".">Home</a></li>
+			<li ng-repeat="spreadsheet in $ctrl.spreadsheetIndex | filter : {'$value':true} : true" ui-sref-active="active">
+				<a ui-sref=".spreadsheet({spreadsheetId : spreadsheet.$id})" ng-bind="spreadsheet.$id"></a>
+			</li>
 		</ul>
-		<div class="navbar-right">
-			<p class="navbar-text">Signed in as <span ng-bind="$ctrl.authObj.displayName"></span></p>
-    		<img ng-src="{{ $ctrl.authObj.photoURL }}" class="navbar-brand" />
-			<button type="button" class="btn btn-default navbar-btn" ng-click="$ctrl.signOut()">Sign out</button>
-		</div>
 	</div>
 </nav>
 <div class="container">
-	<ui-view></ui-view>
+	<ui-view>
+		<div class="media">
+			<div class="media-left">
+				<img class="media-object" ng-src="{{ $ctrl.authObj.photoURL }}" />
+			</div>
+			<div class="media-body">
+				<h4 class="media-heading" ng-bind="$ctrl.authObj.displayName"></h4>
+				<p ng-bind="$ctrl.authObj.email"></p>
+				<button type="button" class="btn btn-default navbar-btn" ng-click="$ctrl.signOut()">Sign out</button>
+			</div>
+		</div>
+		<form name="newSpreadsheetForm" ng-submit="$ctrl.newSpreadsheet(newSpreadsheetId)">
+			<div class="form-group">
+				<label class="control-label" for="newSpreadsheetId">Create new spreadsheet</label>
+				<div class="input-group">
+					<input id="newSpreadsheetId" class="form-control" name="newSpreadsheetId" type="text" ng-model="newSpreadsheetId" placeholder="Spreadsheet ID" ng-minlength="8" maxlength="20" required/>
+					<span class="input-group-btn">
+						<input type="submit" class="btn btn-primary" ng-disabled="newSpreadsheetForm.$invalid" value="Create"/>
+					</span>
+				</div>
+			</div>
+		</form>
+		<form name="joinSpreadsheetForm" ng-submit="$ctrl.joinSpreadsheet(joinSpreadsheetId)">
+			<div class="form-group">
+				<label class="control-label" for="joinSpreadsheetId">Apply to join existing spreadsheet</label>
+				<div class="input-group">
+					<input id="joinSpreadsheetId" class="form-control" name="joinSpreadsheetId" type="text" ng-model="joinSpreadsheetId" placeholder="Spreadsheet ID" ng-minlength="8" maxlength="20" required/>
+					<span class="input-group-btn">
+						<input type="submit" class="btn btn-primary" ng-disabled="joinSpreadsheetForm.$invalid" value="Apply"/>
+					</span>
+				</div>
+			</div>
+		</form>
+	</ui-view>
 </div>

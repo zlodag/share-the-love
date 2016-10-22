@@ -11,67 +11,54 @@
             component: 'signIn'
         }).state({
             name: 'authed',
-            url: '',
-            abstract: true,
+            url: '/home',
             resolve: {
                 authObj: ["Auth", function(Auth) {
                     return Auth.$requireSignIn();
                 }],
-                spreadsheets: ["authObj", "$firebaseArray", function(authObj, $firebaseArray){
-                    return $firebaseArray(firebase.database().ref("users").child(authObj.uid)).$loaded();
+                spreadsheetIndex: ["authObj", "$firebaseArray", function(authObj, $firebaseArray){
+                    return $firebaseArray(firebase.database().ref("spreadsheetIndex").child(authObj.uid)).$loaded();
                 }]
             },
             component: 'authed'
         }).state({
-            name: 'authed.admin',
-            url: '/admin',
-            component: 'admin'
-        }).state({
-            name: 'authed.spreadsheets',
-            url: '/',
-            component: 'spreadsheets'
-        }).state({
-            name: 'authed.spreadsheets.spreadsheet',
-            url: ':spreadsheetId',
+            name: 'authed.spreadsheet',
+            url: '/:spreadsheetId',
             resolve: {
-                spreadsheet: ["$stateParams", "spreadsheets", function($stateParams, spreadsheets){
-                    return spreadsheets.$getRecord($stateParams.spreadsheetId);
-                }],
                 users: ["$stateParams", "$firebaseArray", function($stateParams, $firebaseArray){
                     return $firebaseArray(firebase.database().ref("spreadsheets").child($stateParams.spreadsheetId).child("users")).$loaded();
                 }],
-                me: ["authObj", "users", function(authObj, users){
-                    return users.$getRecord(authObj.uid);
-                }],
-                transactions: ["$stateParams", "$firebaseArray", function($stateParams, $firebaseArray) {
-                    return $firebaseArray(firebase.database().ref("transactions").child($stateParams.spreadsheetId)).$loaded();
+                transactions: ["$stateParams", "TransactionsList", "users", function($stateParams, TransactionsList, users) {
+                    return TransactionsList($stateParams.spreadsheetId, users).$loaded();
                 }]
             },
             component: 'spreadsheet'
         }).state({
-            name: 'authed.spreadsheets.spreadsheet.transactions',
+            name: 'authed.spreadsheet.transactions',
             url: '/transactions',
             component: 'transactions'
         }).state({
-            name: 'authed.spreadsheets.spreadsheet.admin',
+            name: 'authed.spreadsheet.admin',
             url: '/admin',
             resolve: {
-                applications: ["$stateParams", "$firebaseArray", function($stateParams, $firebaseArray){
-                    return $firebaseArray(firebase.database().ref("applications").child($stateParams.spreadsheetId)).$loaded();
+                applicants: ["$stateParams", "$firebaseArray", function($stateParams, $firebaseArray){
+                    return $firebaseArray(firebase.database().ref("spreadsheets").child($stateParams.spreadsheetId).child("applicants")).$loaded();
                 }]
             },
             component: 'spreadsheetAdmin'
         }).state({
-            name: 'authed.spreadsheets.spreadsheet.new',
+            name: 'authed.spreadsheet.new',
             url: '/new',
             component: 'transactionNew'
         }).state({
-            name: 'authed.spreadsheets.spreadsheet.transaction',
+            name: 'authed.spreadsheet.transaction',
             url: '/:transactionId',
             resolve: {
                 transaction: ["$stateParams", "transactions", function($stateParams, transactions){
-                    console.log(transactions);
                     return transactions.$getRecord($stateParams.transactionId);
+                }],
+                transactionRef: ["$stateParams", "transactions", function($stateParams, transactions){
+                    return transactions.$ref().child($stateParams.transactionId);
                 }]
             },
             component: 'transactionDetail'

@@ -1,3 +1,11 @@
+
+<div class="checkbox">
+  <label>
+    <input type="checkbox" ng-model="$ctrl.showReversed">
+    Show reversed
+  </label>
+</div>
+
 <table class="table table-striped table-bordered table-condensed">
     <thead>
         <tr>
@@ -6,23 +14,26 @@
         </tr>
     </thead>
     <tbody>
-        <tr ng-repeat="transaction in $ctrl.transactions | orderBy: '-'" ng-class="{strikethrough : transaction.reversed}">
+        <tr ng-repeat="transaction in $ctrl.transactions | filter : $ctrl.comparator | orderBy: '-'" ng-class="{strikethrough : transaction.reversed}">
             <td>
                 <ul class="list-unstyled">
                     <li>
-                        <a ui-sref="^.transaction({ transactionId: transaction.$id })" ng-bind="transaction.comment"></a>
+                        <a ui-sref="^.transaction({ transactionId: transaction.$id })">
+                            <span ng-if="!transaction.reversed" ng-bind="transaction.comment"></span>
+                            <del ng-if="transaction.reversed" ng-bind="transaction.comment"></del>
+                        </a>
                     </li>
                     <li><em ng-bind="transaction.$priority | date:'medium'"></em></li>
                 </ul>
             </td>
             <td>
                 <dl class="dl-horizontal">
-                    <dt ng-repeat-start="user in $ctrl.users" ng-bind="user.name" ng-class="'text-' + ($ctrl.transactions.totals[transaction.$id][user.$id] < 0 ? 'danger' : 'success')"/>
+                    <dt ng-repeat-start="user in $ctrl.users" ng-bind="user.name" ng-class="'text-' + ($ctrl.transactions.getTotals(transaction.$id)[user.$id] < 0 ? 'danger' : 'success')"/>
                     <dd ng-repeat-end>
-                        <span ng-bind="$ctrl.transactions.totals[transaction.$id][user.$id] / 100 | currency"></span>
-                        <span ng-if="$ctrl.transactions.deltas[transaction.$id][user.$id]" ng-class="'text-' + ($ctrl.transactions.deltas[transaction.$id][user.$id] < 0 ? 'danger' : 'success')">
-                            <span ng-if="!transaction.reversed">({{ $ctrl.transactions.deltas[transaction.$id][user.$id] / 100 | currency }})</span>
-                            <del ng-if="transaction.reversed">({{ $ctrl.transactions.deltas[transaction.$id][user.$id] / 100 | currency }})</del>
+                        <span ng-bind="$ctrl.transactions.getTotals(transaction.$id)[user.$id] / 100 | currency"></span>
+                        <span ng-if="transaction.deltas[user.$id]" ng-class="'text-' + (transaction.deltas[user.$id] < 0 ? 'danger' : 'success')">
+                            <span ng-if="!transaction.reversed">({{ transaction.deltas[user.$id] / 100 | currency }})</span>
+                            <del ng-if="transaction.reversed">({{ transaction.deltas[user.$id] / 100 | currency }})</del>
                         </span>
                     </dd>
                 </dl>

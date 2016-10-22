@@ -16,7 +16,7 @@
             if (currentAuth) {
                 // firebase.database().ref("users").child(currentAuth.uid).child("name").set(currentAuth.displayName);
                 console.log("Signed in as: ", currentAuth.displayName);
-                $state.go('authed.spreadsheets');
+                $state.go('authed');
             }
         }
 

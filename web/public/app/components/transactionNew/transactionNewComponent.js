@@ -103,7 +103,7 @@
                     console.log("no valid choice of type in ctrl.data.type");
                     return false;
             }
-            console.log(transaction);
+            // console.log(transaction);
             ctrl.transactions.$add(transaction).then(function(ref) {
                 $state.go('^.transaction', {transactionId: ref.key});
             });
