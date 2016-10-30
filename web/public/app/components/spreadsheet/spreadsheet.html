@@ -1,6 +1,6 @@
 <ul class="nav nav-tabs">
 	<li ng-if="$ctrl.transactions.length" ui-sref-active="active"><a ui-sref=".transactions">Transactions</a></li>
-	<li ui-sref-active="active"><a ui-sref=".new">New</a></li>
+	<li ng-if="$ctrl.users.$getRecord($ctrl.authObj.uid).active && ($ctrl.users | filter : {'active':true} : true).length > 1" ui-sref-active="active"><a ui-sref=".new">New</a></li>
 	<li ui-sref-active="active" ng-if="$ctrl.users.$getRecord($ctrl.authObj.uid).admin"><a ui-sref=".admin">Admin</a></li>
 </ul>
 

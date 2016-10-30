@@ -1,5 +1,4 @@
-<!-- <pre ng-bind="$ctrl.data | json"></pre>
- --><form name="myForm" ng-submit="myForm.$valid && $ctrl.submit()">
+<form name="myForm" ng-submit="myForm.$valid && $ctrl.validTransaction && $ctrl.submit()">
 	<fieldset>
 		<legend>From</legend>
 		<div ng-repeat="user in $ctrl.users | filter : {'active':true} : true track by user.$id" class="form-group">
@@ -51,6 +50,10 @@
 		</div>
 	</fieldset>
 	<div class="form-group">
+		<dl ng-if="$ctrl.validTransaction" class="dl-horizontal">
+		    <dt ng-repeat-start="(userId, delta) in $ctrl.validTransaction.deltas" ng-bind="$ctrl.users.$getRecord(userId).name"/>
+		    <dd ng-repeat-end ng-class="'text-' + (delta < 0 ? 'danger' : 'success')" ng-bind="delta / 100 | currency"/>
+		</dl>
 		<input type="submit" class="btn btn-primary btn-block" />
 	</div>
 </form>

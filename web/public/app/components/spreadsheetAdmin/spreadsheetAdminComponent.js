@@ -45,7 +45,7 @@
         		name: user.$value
         	};
         	fanOut['spreadsheetIndex/' + user.$id + '/' + spreadsheetId] = true;
-        	console.log(fanOut);
+        	// console.log(fanOut);
 			firebase.database().ref().update(fanOut);
 
         	// ctrl.applicants.$ref().parent().set(fanOut);
