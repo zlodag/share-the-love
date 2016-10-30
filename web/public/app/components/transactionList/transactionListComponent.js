@@ -2,8 +2,8 @@
 (function() {
     angular
     .module("shareTheLove")
-    .component("transactions", {
-        templateUrl: "app/components/transactions/transactions.html",
+    .component("transactionList", {
+        templateUrl: "app/components/transactionList/transactionList.html",
         bindings : {
         	users : "<",
         	transactions : "<"

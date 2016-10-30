@@ -2,9 +2,9 @@
 (function() {
 	angular
 		.module("shareTheLove")
-		.factory("TransactionsList", ["$firebaseArray", TransactionsList]);
+		.factory("TransactionList", ["$firebaseArray", TransactionList]);
 
-	function TransactionsList($firebaseArray) {
+	function TransactionList($firebaseArray) {
 
 	    return function(spreadsheetId, users){
 

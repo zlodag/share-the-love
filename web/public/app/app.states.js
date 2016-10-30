@@ -28,15 +28,15 @@
                 users: ["$stateParams", "$firebaseArray", function($stateParams, $firebaseArray){
                     return $firebaseArray(firebase.database().ref("spreadsheets").child($stateParams.spreadsheetId).child("users")).$loaded();
                 }],
-                transactions: ["$stateParams", "TransactionsList", "users", function($stateParams, TransactionsList, users) {
-                    return TransactionsList($stateParams.spreadsheetId, users).$loaded();
+                transactions: ["$stateParams", "TransactionList", "users", function($stateParams, TransactionList, users) {
+                    return TransactionList($stateParams.spreadsheetId, users).$loaded();
                 }]
             },
             component: 'spreadsheet'
         }).state({
             name: 'authed.spreadsheet.transactions',
             url: '/transactions',
-            component: 'transactions'
+            component: 'transactionList'
         }).state({
             name: 'authed.spreadsheet.admin',
             url: '/admin',
