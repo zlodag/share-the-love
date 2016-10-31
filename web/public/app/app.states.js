@@ -16,10 +16,12 @@
                 authObj: ["Auth", function(Auth) {
                     return Auth.$requireSignIn();
                 }],
-                spreadsheetIndex: ["authObj", "$firebaseArray", function(authObj, $firebaseArray){
-                    return $firebaseArray(firebase.database().ref("spreadsheetIndex").child(authObj.uid)).$loaded();
-                }]
-            },
+                spreadsheets: ["authObj", "$firebaseArray", function(authObj, $firebaseArray){
+                    return $firebaseArray(firebase.database().ref("users").child(authObj.uid).child('spreadsheets')).$loaded();
+                }],
+                applications: ["authObj", "$firebaseArray", function(authObj, $firebaseArray){
+                    return $firebaseArray(firebase.database().ref("users").child(authObj.uid).child('applications')).$loaded();
+                }]            },
             component: 'authed'
         }).state({
             name: 'authed.spreadsheet',

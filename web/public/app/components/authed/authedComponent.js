@@ -6,7 +6,8 @@
         templateUrl: "app/components/authed/authed.html",
         bindings : {
         	authObj : "<",
-            spreadsheetIndex : "<"
+            spreadsheets : "<",
+            applications : "<"
         },
         controller : ["Auth", "$state", controller]
     });
@@ -21,17 +22,16 @@
 
         this.joinSpreadsheet = function(spreadsheetId){
             var authObj = Auth.$getAuth();
-            firebase.database().ref("spreadsheets").child(spreadsheetId).child("applicants").child(authObj.uid).set(authObj.displayName).then(function(){
-                console.log("Success!");
-            }, function(error){
-                console.error("There was an error", error);
-            });
+            var fanOut = {};
+            fanOut['users/' + authObj.uid + '/applications/' + spreadsheetId] = true;
+            fanOut['spreadsheets/' + spreadsheetId + '/applicants/' + authObj.uid] = authObj.displayName;
+            firebase.database().ref().update(fanOut);
         };
 
         this.newSpreadsheet = function(spreadsheetId){
             var authObj = Auth.$getAuth();
             var fanOut = {};
-            fanOut['spreadsheetIndex/' + authObj.uid + '/' + spreadsheetId] = true;
+            fanOut['users/' + authObj.uid + '/spreadsheets/' + spreadsheetId] = true;
             fanOut['spreadsheets/' + spreadsheetId + '/users/' + authObj.uid] = {
                 name: authObj.displayName,
                 admin: true,
@@ -40,6 +40,14 @@
             firebase.database().ref().update(fanOut).then(function(){
                 $state.go(".spreadsheet", {spreadsheetId : spreadsheetId});
             });
+        };
+
+        this.withdrawApplication = function(spreadsheetId){
+            var authObj = Auth.$getAuth();
+            var fanOut = {};
+            fanOut['users/' + authObj.uid + '/applications/' + spreadsheetId] = null;
+            fanOut['spreadsheets/' + spreadsheetId + '/applicants/' + authObj.uid] = null;
+            firebase.database().ref().update(fanOut);
         };
 
 	}

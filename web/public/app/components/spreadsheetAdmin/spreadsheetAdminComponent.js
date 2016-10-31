@@ -32,7 +32,11 @@
         };
 
         ctrl.decline = function(user){
-            ctrl.applicants.$remove(user);
+            var fanOut = {};
+            var spreadsheetId = $stateParams.spreadsheetId;
+            fanOut['spreadsheets/' + spreadsheetId + '/applicants/' + user.$id] = null;
+            fanOut['users/' + user.$id + '/applications/' + spreadsheetId] = null;
+            firebase.database().ref().update(fanOut);
         };
 
         ctrl.accept = function(user){
@@ -44,7 +48,8 @@
         		admin: false,
         		name: user.$value
         	};
-        	fanOut['spreadsheetIndex/' + user.$id + '/' + spreadsheetId] = true;
+        	fanOut['users/' + user.$id + '/spreadsheets/' + spreadsheetId] = true;
+            fanOut['users/' + user.$id + '/applications/' + spreadsheetId] = null;
         	// console.log(fanOut);
 			firebase.database().ref().update(fanOut);
 

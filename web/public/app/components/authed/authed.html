@@ -2,7 +2,7 @@
 	<div class="container-fluid">
 		<ul class="nav navbar-nav">
 			<li ui-sref-active-eq="active"><a ui-sref=".">Home</a></li>
-			<li ng-repeat="spreadsheet in $ctrl.spreadsheetIndex | filter : {'$value':true} : true" ui-sref-active="active">
+			<li ng-repeat="spreadsheet in $ctrl.spreadsheets | filter : {'$value':true} : true track by spreadsheet.$id" ui-sref-active="active">
 				<a ui-sref=".spreadsheet({spreadsheetId : spreadsheet.$id})" ng-bind="spreadsheet.$id"></a>
 			</li>
 		</ul>
@@ -42,5 +42,14 @@
 				</div>
 			</div>
 		</form>
+		<div ng-show="$ctrl.applications.length">
+			<h4>Current applications</h4>
+			<ul class="list-unstyled">
+				<li ng-repeat="application in $ctrl.applications track by application.$id">
+					<span ng-bind="application.$id"></span>
+					<button type="button" class="btn btn-danger" ng-click="$ctrl.withdrawApplication(application.$id)">Withdraw</button>
+				</li>
+			</ul>
+		</div>
 	</ui-view>
 </div>

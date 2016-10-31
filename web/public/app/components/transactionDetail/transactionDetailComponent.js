@@ -7,7 +7,8 @@
         bindings: {
             transaction: "<",
             users: "<",
-            transactionRef: "<"
+            transactionRef: "<",
+            authObj: "<"
         },
         controller: ["Auth", controller]
     });

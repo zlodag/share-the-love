@@ -28,7 +28,7 @@ Deltas:
 </ul>
 
 
-<form name="reverseForm" ng-if="!$ctrl.transaction.reversed" class="form-group" ng-class="{'has-error': reverseForm.$invalid}" ng-submit="$ctrl.reverse(comment)">
+<form name="reverseForm" ng-if="!$ctrl.transaction.reversed && $ctrl.users.$getRecord($ctrl.authObj.uid).active" class="form-group" ng-class="{'has-error': reverseForm.$invalid}" ng-submit="$ctrl.reverse(comment)">
 	<label class="control-label" for="comment">Reverse transaction</label>
 	<div class="input-group">
 		<input class="form-control" type="text" id="comment" name="comment" minlength="3" maxlength="127" required title="3 to 127 characters" placeholder="Comment" ng-model="comment"/>
